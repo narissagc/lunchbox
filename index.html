@@ -360,6 +360,13 @@ const DEFAULT_STATE = {
 
 let S = JSON.parse(localStorage.getItem('daycareApp_v2') || 'null') || JSON.parse(JSON.stringify(DEFAULT_STATE));
 
+// Dynamic self-repair to prevent crashes caused by changes in older versions of the app data
+if (!S.daycareSnacks) S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
+if (!S.daycareSnacks.A) S.daycareSnacks.A = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.A));
+if (!S.daycareSnacks.B) S.daycareSnacks.B = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.B));
+if (!S.favorites) S.favorites = [...DEFAULT_STATE.favorites];
+if (!S.meals) S.meals = {};
+
 function save() { localStorage.setItem('daycareApp_v2', JSON.stringify(S)); }
 function saveSetting(key, val) { S[key] = val; save(); }
 function saveDaycareSnack(week, slot, val) { S.daycareSnacks[week][slot] = val; save(); }
@@ -384,7 +391,6 @@ function getMeals(key) {
 }
 function isWeekend(o) { const d = dateForOffset(o).getDay(); return d === 0 || d === 6; }
 
-// Smart Check helper to see if daycare description contains multiple items
 function hasTwoItems(text) {
   if (!text) return false;
   return text.includes('&') || /\band\b/i.test(text);
@@ -426,12 +432,13 @@ function closeSheet() {
 function renderSheetFavs() {
   const key = dateKey(S.offset);
   const existing = getMeals(key)[sheetMealType] || [];
-  document.getElementById('sheet-favs').innerHTML = S.favorites.map(f => {
+  document.getElementById('sheet-favs').innerHTML = S.favorites.map((f, idx) => {
     const sel = existing.includes(f);
-    return `<button class="fav-chip${sel?' selected':''}" onclick="toggleFav(${JSON.stringify(f)})">${sel?'<i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>':''}${escH(f)}</button>`;
+    return `<button class="fav-chip${sel?' selected':''}" onclick="toggleFav(${idx})">${sel?'<i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>':''}${escH(f)}</button>`;
   }).join('');
 }
-function toggleFav(food) {
+function toggleFav(index) {
+  const food = S.favorites[index];
   const key = dateKey(S.offset);
   const meals = getMeals(key);
   const idx = meals[sheetMealType].indexOf(food);
@@ -447,7 +454,7 @@ function addFromTyped() {
   if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
   if (!S.favorites.includes(val)) S.favorites.unshift(val);
   inp.value = '';
-  inp.focus(); // Keep focus active on the text box for rapid typing
+  inp.focus(); 
   save(); renderSheetFavs(); renderToday();
 }
 function removeItem(type, food) {
@@ -524,7 +531,7 @@ function renderToday() {
       <div class="card-divider"></div>` : '';
 
     const chipsHtml = items.length
-      ? items.map(f => `<span class="chip packed">${escH(f)}<button class="chip-remove" onclick="removeItem('${m.key}',${JSON.stringify(f)})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`).join('')
+      ? items.map(f => `<span class="chip packed">${escH(f)}<button class="chip-remove" onclick="removeItem('${m.key}',${JSON.stringify(f).replace(/"/g, '&quot;')})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`).join('')
       : `<span class="nothing-yet">Nothing packed yet</span>`;
 
     return `<div class="meal-card">
@@ -601,7 +608,6 @@ function renderWeek() {
       }
     }
 
-    // Dynamic verification calculation using hasTwoItems evaluation
     const dc = S.daycareSnacks[wl] || { morning: '', afternoon: '' };
     let score = 0;
     
@@ -641,8 +647,8 @@ function renderSettings() {
   document.getElementById('dc-B-afternoon').value = S.daycareSnacks.B.afternoon;
 
   const area = document.getElementById('settings-favs-area');
-  const chips = S.favorites.map(f =>
-    `<span class="fav-manage-chip">${escH(f)}<button onclick="removeFav(${JSON.stringify(f)})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`
+  const chips = S.favorites.map((f, idx) =>
+    `<span class="fav-manage-chip">${escH(f)}<button onclick="removeFav(${idx})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`
   ).join('');
   area.innerHTML = `
     <div class="favs-chips-wrap">${chips}</div>
@@ -651,8 +657,8 @@ function renderSettings() {
       <button class="fav-add-btn" onclick="addFav()">Save</button>
     </div>`;
 }
-function removeFav(food) {
-  S.favorites = S.favorites.filter(f => f !== food);
+function removeFav(index) {
+  S.favorites.splice(index, 1);
   save(); renderSettings();
 }
 function addFav() {
