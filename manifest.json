@@ -1,7 +1,8 @@
 {
   "name": "Lunchbox",
   "short_name": "Lunchbox",
-  "start_url": ".",
+  "start_url": "/lunchbox/",
+  "scope": "/lunchbox/",
   "display": "standalone",
   "background_color": "#FAF9F6",
   "theme_color": "#FFFFFF",
