@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 160 160">
+  <rect width="160" height="160" rx="36" fill="#b5ead7"/>
+  <!-- crust band -->
+  <path d="M26 50 Q80 6 134 50 L127 63 Q80 26 33 63 Z" fill="#ffdac1"/>
+  <!-- sauce -->
+  <path d="M33 63 Q80 26 127 63 L92 138 Q80 149 68 138 Z" fill="#ff9aa2"/>
+  <!-- cheese -->
+  <path d="M40 72 Q80 40 120 72 L91 133 Q80 143 69 133 Z" fill="#ffdac1"/>
+  <!-- big yellow star top-right, overlapping crust -->
+  <path d="M116 18 L120 32 L134 36 L120 40 L116 54 L112 40 L98 36 L112 32 Z" fill="#f7f3c7"/>
+  <!-- medium pink star top-left -->
+  <path d="M26 13 L28 19 L34 21 L28 23 L26 29 L24 23 L18 21 L24 19 Z" fill="#ff9aa2" opacity=".85"/>
+  <!-- medium lavender star bottom-left -->
+  <path d="M22 106 L24.5 114 L33 116.5 L24.5 119 L22 127 L19.5 119 L11 116.5 L19.5 114 Z" fill="#c7ceff"/>
+  <!-- dots -->
+  <circle cx="22" cy="42" r="3" fill="#f7f3c7" opacity=".7"/>
+  <circle cx="142" cy="92" r="2.5" fill="#ff9aa2" opacity=".6"/>
+  <circle cx="132" cy="118" r="2" fill="#ffdac1" opacity=".7"/>
+</svg>
