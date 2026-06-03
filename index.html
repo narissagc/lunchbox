@@ -21,24 +21,28 @@
     --text-secondary: #6B6A65;
     --text-hint: #A4A39F;
     
-    /* Requested Pastel Palette Base Colors */
-    --purple-50: #ff9aa2;  /* Pastel Pink */
-    --purple-600: #e27c85; 
-    --purple-800: #7a1f29;
+    /* Main UI Accent & Daycare Offered: Pastel Periwinkle Blue */
+    --purple-50: #c7ceff;  
+    --purple-600: #8fa0e6; 
+    --purple-800: #1a2b75;
     
-    --teal-50: #b5ead7;    /* Pastel Mint */
+    /* Lunch Card: Pastel Mint Green */
+    --teal-50: #b5ead7;    
     --teal-600: #5cb395;
     --teal-800: #0c513f;
     
-    --amber-50: #ffdac1;   /* Pastel Peach */
+    /* Morning Snack Card: Pastel Peach */
+    --amber-50: #ffdac1;   
     --amber-600: #d99a73;
     --amber-800: #704214;
     
-    --blue-50: #c7ceff;    /* Pastel Periwinkle Blue */
-    --blue-600: #8fa0e6;
-    --blue-800: #1a2b75;
+    /* Afternoon Snack Card: Pastel Pink */
+    --blue-50: #ff9aa2;    
+    --blue-600: #e27c85;
+    --blue-800: #7a1f29;
     
-    --gray-50: #f7f3c7;    /* Pastel Yellow */
+    /* Settings & Highlights: Pastel Yellow */
+    --gray-50: #f7f3c7;    
     --gray-600: #666127;
     
     --radius-sm: 10px; --radius-md: 14px; --radius-lg: 20px;
@@ -63,7 +67,6 @@
   .day-center { text-align: center; flex: 1; }
   .day-name { font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
   .day-meta { font-size: 13px; color: var(--text-secondary); margin-top: 3px; display: flex; align-items: center; gap: 7px; justify-content: center; }
-  .week-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
   .today-btn { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--amber-50); color: var(--amber-800); border: none; cursor: pointer; font-family: var(--font); transition: background 0.12s; white-space: nowrap; }
   .today-btn:hover { background: var(--amber-600); color: #fff; }
 
@@ -163,7 +166,7 @@
   .backup-btn i { font-size: 20px; flex-shrink: 0; }
   .backup-btn .btn-sub { font-size: 11px; font-weight: 500; color: var(--text-hint); display: block; margin-top: 1px; }
   .backup-btn.export i { color: var(--teal-600); }
-  .backup-btn.import i { color: var(--blue-600); }
+  .backup-btn.import i { color: var(--purple-600); }
   .backup-btn.danger i { color: #A32D2D; }
   .backup-btn.danger { color: #A32D2D; }
   .restore-toast { font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: var(--radius-sm); text-align: center; display: none; }
@@ -203,7 +206,6 @@
           <div class="day-name" id="day-name">Monday</div>
           <div class="day-meta">
             <span id="day-date-label">Jun 2</span>
-            <span class="week-badge" id="week-badge">Week A</span>
             <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
           </div>
         </div>
@@ -435,14 +437,12 @@ function jumpToToday() {
   S.offset = 0; save(); renderToday();
 }
 
-// ── Render Today ──
 function renderToday() {
   const d = dateForOffset(S.offset);
   const wl = weekLetter(S.offset);
   const key = dateKey(S.offset);
   document.getElementById('day-name').textContent = DAYS[d.getDay()];
   document.getElementById('day-date-label').textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  document.getElementById('week-badge').textContent = `Week ${wl}`;
   const jumpBtn = document.getElementById('today-jump-btn');
   if (jumpBtn) jumpBtn.style.display = S.offset === 0 ? 'none' : 'inline-block';
 
