@@ -148,4 +148,646 @@
   .week-chip.empty { background: var(--gray-50); color: var(--gray-600); font-style: italic; font-weight: 500; }
   .week-chip.more { background: var(--surface2); color: var(--text-secondary); font-weight: 500; }
   
-  .week-badge-small { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--purple-50); color: var(--purple-80
+  .week-badge-small { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
+  .week-done-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 3px; }
+  .week-done-badge.complete { background: var(--teal-50); color: var(--teal-800); }
+  .week-done-badge.incomplete { background: var(--surface2); color: var(--text-secondary); border: 0.5px solid var(--border-med); }
+
+  /* ── SETTINGS CONFIG ── */
+  .settings-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+  .settings-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); padding: 14px 16px 10px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 0.5px solid var(--border); gap: 12px; }
+  .settings-row:first-of-type { border-top: none; }
+  .settings-row label { font-size: 14px; font-weight: 600; color: var(--text-primary); flex-shrink: 0; }
+  .settings-row input[type=date], .settings-row select { font-size: 13px; font-family: var(--font); border: 0.5px solid var(--border-med); border-radius: 8px; padding: 6px 10px; background: var(--surface2); color: var(--text-primary); max-width: 180px; }
+  .settings-text-input { width: 100%; font-size: 13px; font-family: var(--font); border: 0.5px solid var(--border-med); border-radius: 8px; padding: 8px 10px; background: var(--surface2); color: var(--text-primary); margin-top: 6px; }
+  .settings-text-input:focus { outline: none; border-color: var(--purple-600); }
+  .daycare-input-block { padding: 10px 16px 14px; border-top: 0.5px solid var(--border); }
+  .daycare-input-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+
+  .favs-manage { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .favs-chips-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
+  .fav-manage-chip { font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 20px; background: var(--gray-50); color: var(--gray-600); display: flex; align-items: center; gap: 5px; }
+  .fav-manage-chip button { background: none; border: none; cursor: pointer; color: var(--text-hint); font-size: 15px; padding: 0; line-height: 1; display: flex; align-items: center; }
+  .fav-manage-chip button:hover { color: var(--text-primary); }
+  .fav-add-row { display: flex; gap: 8px; }
+  .fav-add-input { flex: 1; font-size: 13px; font-family: var(--font); border: 0.5px solid var(--border-med); border-radius: 8px; padding: 8px 10px; background: var(--surface2); color: var(--text-primary); }
+  .fav-add-input:focus { outline: none; border-color: var(--purple-600); }
+  .fav-add-btn { padding: 8px 14px; border-radius: 8px; background: var(--purple-50); color: var(--purple-800); border: none; font-size: 13px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+
+  /* ── BACKUP MANAGEMENT ── */
+  .backup-area { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .backup-btn { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-med); background: none; font-size: 14px; font-weight: 600; font-family: var(--font); color: var(--text-primary); cursor: pointer; text-align: left; transition: background 0.12s; }
+  .backup-btn:hover { background: var(--surface2); }
+  .backup-btn i { font-size: 20px; flex-shrink: 0; }
+  .backup-btn .btn-sub { font-size: 11px; font-weight: 500; color: var(--text-hint); display: block; margin-top: 1px; }
+  .backup-btn.export i { color: var(--teal-600); }
+  .backup-btn.import i { color: var(--purple-600); }
+  .backup-btn.danger i { color: #A32D2D; }
+  .backup-btn.danger { color: #A32D2D; }
+  .restore-toast { font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: var(--radius-sm); text-align: center; display: none; }
+  .restore-toast.success { background: var(--teal-50); color: var(--teal-800); }
+  .restore-toast.error   { background: #FCEBEB; color: #A32D2D; }
+
+  /* ── MODAL SYSTEM ── */
+  .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 50; pointer-events: none; transition: background 0.2s; }
+  .sheet-overlay.open { background: rgba(0,0,0,0.4); pointer-events: all; }
+  .sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; background: var(--surface); border-radius: 24px 24px 0 0; padding: 12px 20px 36px; z-index: 51; transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1); max-height: 80vh; overflow-y: auto; }
+  .sheet.open { transform: translateX(-50%) translateY(0); }
+  .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border-med); margin: 0 auto 18px; }
+  .sheet-title { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; }
+  .sheet-input-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .sheet-input { flex: 1; height: 42px; border: 0.5px solid var(--border-med); border-radius: 10px; padding: 0 12px; font-size: 14px; font-family: var(--font); background: var(--surface2); color: var(--text-primary); }
+  .sheet-input:focus { outline: none; border-color: var(--purple-600); }
+  .sheet-add-btn { height: 42px; padding: 0 18px; background: var(--teal-50); color: var(--teal-800); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: var(--font); cursor: pointer; white-space: nowrap; }
+  .favs-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); margin-bottom: 10px; }
+  .favs-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .fav-chip { font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 20px; border: 0.5px solid var(--border-med); background: var(--surface2); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.12s; }
+  .fav-chip.selected { background: var(--teal-50); color: var(--teal-800); border-color: transparent; }
+  .fav-chip:hover:not(.selected) { background: var(--surface2); border-color: var(--text-hint); }
+</style>
+</head>
+<body>
+<div class="phone-wrap">
+
+  <div class="view active" id="view-today">
+    <div class="top-bar">
+      <div class="app-title">
+        <span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Lunchbox</span>
+        <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
+      </div>
+      <div class="day-nav">
+        <button class="nav-arrow" onclick="changeDay(-1)" aria-label="Previous day"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+        <div class="day-center">
+          <div class="day-name" id="day-name">Monday</div>
+          <div class="day-meta">
+            <span id="day-date-label">Jun 2</span>
+          </div>
+        </div>
+        <button class="nav-arrow" onclick="changeDay(1)" aria-label="Next day"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="meals-scroll" id="meals-container"></div>
+  </div>
+
+  <div class="view" id="view-week">
+    <div class="top-bar" style="padding-bottom:14px; display:flex; align-items:center; gap:12px;">
+      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back to Today" style="width:34px; height:34px; font-size:16px;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <div class="app-title" style="margin-bottom:0"><i class="ti ti-calendar-week" style="font-size:14px" aria-hidden="true"></i> This week</div>
+    </div>
+    <div class="week-scroll"><div class="week-grid" id="week-grid"></div></div>
+  </div>
+
+  <div class="view" id="view-settings">
+    <div class="top-bar" style="padding-bottom:14px; display:flex; align-items:center; gap:12px;">
+      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back to Today" style="width:34px; height:34px; font-size:16px;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <div class="app-title" style="margin-bottom:0"><i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Settings</div>
+    </div>
+    <div class="settings-scroll">
+
+      <div class="settings-section">
+        <div class="settings-section-title">Schedule</div>
+        <div class="settings-row">
+          <label for="week-a-start">Week A starts on</label>
+          <input type="date" id="week-a-start" onchange="saveSetting('weekAStart', this.value); renderAll()" />
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Daycare Snacks — Week A</div>
+        <div id="settings-dc-A-area"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Daycare Snacks — Week B</div>
+        <div id="settings-dc-B-area"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Favorites</div>
+        <div class="favs-manage" id="settings-favs-area"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Backup &amp; restore</div>
+        <div class="backup-area">
+          <button class="backup-btn export" onclick="exportBackup()">
+            <i class="ti ti-download" aria-hidden="true"></i>
+            <span><span style="display:block">Export backup</span><span class="btn-sub">Downloads a .json file — save it to Files or iCloud</span></span>
+          </button>
+          <button class="backup-btn import" onclick="document.getElementById('import-file').click()">
+            <i class="ti ti-upload" aria-hidden="true"></i>
+            <span><span style="display:block">Import backup</span><span class="btn-sub">Restore from a previously exported file</span></span>
+          </button>
+          <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importBackup(event)" />
+          <div class="restore-toast" id="restore-toast"></div>
+          <button class="backup-btn danger" onclick="confirmReset()">
+            <i class="ti ti-trash" aria-hidden="true"></i>
+            <span><span style="display:block">Reset all data</span><span class="btn-sub">Clears everything — export first!</span></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-item active" id="tab-today" onclick="switchTab('today')">
+      <i class="ti ti-calendar-event" aria-hidden="true"></i>
+      <span>Today</span>
+    </button>
+    <button class="tab-item" id="tab-week" onclick="switchTab('week')">
+      <i class="ti ti-layout-grid" aria-hidden="true"></i>
+      <span>Week</span>
+    </button>
+    <button class="tab-item" id="tab-settings" onclick="switchTab('settings')">
+      <i class="ti ti-settings" aria-hidden="true"></i>
+      <span>Settings</span>
+    </button>
+  </div>
+
+</div>
+
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()">
+  <div class="sheet" id="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheet-title">Add to lunch</div>
+    <div class="sheet-input-row">
+      <input class="sheet-input" id="sheet-input" placeholder="Type a food item…" onkeydown="if(event.key==='Enter')addFromTyped()" />
+      <button class="sheet-add-btn" onclick="addFromTyped()">Add</button>
+    </div>
+    <div class="favs-section-label">Favorites & recent</div>
+    <div class="favs-chips" id="sheet-favs"></div>
+  </div>
+</div>
+
+<script>
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const DEFAULT_STATE = {
+  weekAStart: '2026-06-01',
+  offset: 0,
+  meals: {},
+  favorites: [
+    'Apple slices','Banana','Blueberries','Grapes','Strawberries','Orange slices','Watermelon',
+    'Cheese cubes','String cheese','Yogurt pouch','Hummus & crackers',
+    'PB&J sandwich','Turkey wrap','Turkey & cheese sandwich','Pasta salad','Mac & cheese',
+    'Baby carrots','Cucumber slices','Veggie straws',
+    'Goldfish crackers','Pretzels','Rice cakes','Mini muffin','Granola bar'
+  ],
+  daycareSnacks: {
+    A: { 
+      morning: { Monday: 'Milk & Cheerios', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Fruit Crisps', Tuesday: 'Pretzels', Wednesday: 'Mini Sweet Peppers', Thursday: 'Cheese Sticks & Cucumbers', Friday: 'Celery & Sunbutter', Saturday: '', Sunday: '' }
+    },
+    B: { 
+      morning: { Monday: 'Milk & Chex', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Pomegranate Seeds', Tuesday: 'Apple Slices & Sunbutter', Wednesday: 'Carrot Sticks & Raisins', Thursday: 'Bananas', Friday: '', Saturday: '', Sunday: '' }
+    }
+  }
+};
+
+let S;
+
+function initStorage() {
+  try {
+    S = JSON.parse(localStorage.getItem('lunchbox_v7_final_perfect'));
+  } catch (e) {
+    S = null;
+  }
+  const isValid = S && S.daycareSnacks && S.daycareSnacks.A && S.daycareSnacks.A.morning && typeof S.daycareSnacks.A.morning === 'object' && S.favorites && Array.isArray(S.favorites) && S.meals;
+  if (!isValid) {
+    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    save();
+  }
+}
+
+function save() { 
+  try {
+    localStorage.setItem('lunchbox_v7_final_perfect', JSON.stringify(S)); 
+  } catch(e) {}
+}
+
+function saveSetting(key, val) { S[key] = val; save(); }
+
+function saveDaycareSnack(week, slot, day, val) { 
+  if (!S.daycareSnacks) S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
+  if (!S.daycareSnacks[week]) S.daycareSnacks[week] = { morning: {}, afternoon: {} };
+  if (!S.daycareSnacks[week][slot]) S.daycareSnacks[week][slot] = {};
+  S.daycareSnacks[week][slot][day] = val; 
+  save(); 
+}
+
+function dateForOffset(o) {
+  const d = new Date(); d.setDate(d.getDate() + o); return d;
+}
+function dateKey(o) {
+  const d = dateForOffset(o);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function weekLetter(o) {
+  const d = dateForOffset(o);
+  const start = new Date(S.weekAStart);
+  const weeks = Math.floor((d - start) / (7 * 86400000));
+  return ((weeks % 2) + 2) % 2 === 0 ? 'A' : 'B';
+}
+function getMeals(key) {
+  if (!S.meals[key]) S.meals[key] = { morning: [], lunch: [], afternoon: [], dcAccepted: {} };
+  if (!S.meals[key].dcAccepted) S.meals[key].dcAccepted = {};
+  if (!S.meals[key].morning) S.meals[key].morning = [];
+  if (!S.meals[key].lunch) S.meals[key].lunch = [];
+  if (!S.meals[key].afternoon) S.meals[key].afternoon = [];
+  return S.meals[key];
+}
+function isWeekend(o) { const d = dateForOffset(o).getDay(); return d === 0 || d === 6; }
+
+function hasTwoItems(text) {
+  if (!text) return false;
+  return text.includes('&') || /\band\b/i.test(text);
+}
+
+function switchTab(name) {
+  ['today','week','settings'].forEach(n => {
+    const viewEl = document.getElementById(`view-${n}`);
+    const tabEl = document.getElementById(`tab-${n}`);
+    if (viewEl) viewEl.classList.toggle('active', n === name);
+    if (tabEl) tabEl.classList.toggle('active', n === name);
+  });
+  if (name === 'week') renderWeek();
+  if (name === 'settings') renderSettings();
+}
+
+function changeDay(dir) {
+  S.offset += dir; save(); renderToday();
+}
+
+let sheetMealType = null;
+let sheetMealLabel = null;
+
+function openSheet(type, label) {
+  sheetMealType = type; sheetMealLabel = label;
+  document.getElementById('sheet-title').textContent = `Add to ${label}`;
+  document.getElementById('sheet-input').value = '';
+  renderSheetFavs();
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  setTimeout(() => document.getElementById('sheet-input').focus(), 350);
+}
+
+function closeSheet() {
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+  renderToday();
+}
+
+function renderSheetFavs() {
+  const key = dateKey(S.offset);
+  const existing = getMeals(key)[sheetMealType] || [];
+  document.getElementById('sheet-favs').innerHTML = S.favorites.map((f, idx) => {
+    const sel = existing.includes(f);
+    return `<button class="fav-chip${sel?' selected':''}" onclick="toggleFav(${idx})">${sel?'<i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>':''}${escH(f)}</button>`;
+  }).join('');
+}
+function toggleFav(index) {
+  const food = S.favorites[index];
+  const key = dateKey(S.offset);
+  const meals = getMeals(key);
+  const idx = meals[sheetMealType].indexOf(food);
+  if (idx > -1) meals[sheetMealType].splice(idx,1);
+  else meals[sheetMealType].push(food);
+  save(); renderSheetFavs(); renderToday();
+}
+
+function addFromTyped() {
+  const inp = document.getElementById('sheet-input');
+  if (!inp) { closeSheet(); return; }
+  const val = inp.value.trim(); 
+  if (val) {
+    const key = dateKey(S.offset);
+    const meals = getMeals(key);
+    if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
+    if (!S.favorites.includes(val)) S.favorites.unshift(val);
+    inp.value = '';
+    save();
+  }
+  closeSheet(); 
+}
+
+function removeItem(type, index) {
+  const key = dateKey(S.offset);
+  const meals = getMeals(key);
+  if (meals[type]) {
+    meals[type].splice(index, 1);
+    save(); renderToday();
+  }
+}
+
+function toggleDcAccept(slot) {
+  const key = dateKey(S.offset);
+  const wl = weekLetter(S.offset);
+  const d = dateForOffset(S.offset);
+  const dayName = DAYS[d.getDay()];
+  const dc = S.daycareSnacks[wl];
+  const snackText = (dc && dc[slot]) ? (dc[slot][dayName] || '') : '';
+  const meals = getMeals(key);
+  
+  const currentVal = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(snackText);
+  meals.dcAccepted[slot] = !currentVal;
+  save(); renderToday();
+}
+
+function escH(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function jumpToToday() {
+  S.offset = 0; save(); renderToday();
+}
+
+function renderToday() {
+  const d = dateForOffset(S.offset);
+  const wl = weekLetter(S.offset);
+  const key = dateKey(S.offset);
+  const dayName = DAYS[d.getDay()];
+  
+  const dayNameEl = document.getElementById('day-name');
+  const dayDateLabelEl = document.getElementById('day-date-label');
+  if (dayNameEl) dayNameEl.textContent = dayName;
+  if (dayDateLabelEl) dayDateLabelEl.textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  
+  const jumpBtn = document.getElementById('today-jump-btn');
+  if (jumpBtn) jumpBtn.style.display = S.offset === 0 ? 'none' : 'inline-block';
+
+  const container = document.getElementById('meals-container');
+  if (!container) return;
+
+  if (isWeekend(S.offset)) {
+    container.innerHTML = `<div class="weekend-state">
+      <div class="weekend-icon">🎉</div>
+      <div class="weekend-title">It's the weekend!</div>
+      <div class="weekend-sub">No daycare today — enjoy the break.</div>
+    </div>`;
+    return;
+  }
+
+  const dc = S.daycareSnacks[wl] || { morning: {}, afternoon: {} };
+  const meals = getMeals(key);
+  const dcAccepted = meals.dcAccepted || {};
+
+  const currentMorningSnack = (dc.morning && dc.morning[dayName]) ? dc.morning[dayName] : '';
+  const currentAfternoonSnack = (dc.afternoon && dc.afternoon[dayName]) ? dc.afternoon[dayName] : '';
+
+  const mealDefs = [
+    { key:'morning',   label:'Morning snack',   icon:'<i class="ti ti-sun" aria-hidden="true"></i>',    iconClass:'morning',   time:'9:00 AM',  dcSnack: currentMorningSnack },
+    { key:'lunch',     label:'Lunch',            icon:'<i class="ti ti-salad" aria-hidden="true"></i>',  iconClass:'lunch',     time:'12:00 PM', dcSnack: null         },
+    { key:'afternoon', label:'Afternoon snack',  icon:'<i class="ti ti-moon" aria-hidden="true"></i>',   iconClass:'afternoon', time:'3:00 PM',  dcSnack: currentAfternoonSnack }
+  ];
+
+  container.innerHTML = mealDefs.map(m => {
+    const items = meals[m.key] || [];
+    const packLabel = m.dcSnack ? 'Also packing' : 'Packing';
+    const isAccepted = dcAccepted[m.key] !== undefined ? dcAccepted[m.key] : hasTwoItems(m.dcSnack);
+
+    const dcHtml = m.dcSnack ? `
+      <div class="card-section">
+        <div class="section-eyebrow"><i class="ti ti-building-community" style="font-size:12px" aria-hidden="true"></i> Daycare is offering</div>
+        <div class="daycare-offered" style="${isAccepted ? '' : 'background-color: var(--surface2); border: 0.5px dashed var(--border-med);'}">
+          <span class="daycare-offered-text">${escH(m.dcSnack)}</span>
+          <button class="dc-toggle-btn ${isAccepted ? 'active' : 'supplement'}" onclick="toggleDcAccept('${m.key}')">
+            ${isAccepted ? '✓ Covered' : '⚠️ Supplementing'}
+          </button>
+        </div>
+      </div>
+      <div class="card-divider"></div>` : '';
+
+    const chipsHtml = items.length
+      ? items.map((f, idx) => `<span class="chip packed">${escH(f)}<button class="chip-remove" onclick="removeItem('${m.key}', ${idx})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`).join('')
+      : `<span class="nothing-yet">Nothing packed yet</span>`;
+
+    return `<div class="meal-card">
+      <div class="meal-card-head">
+        <div class="meal-title-row">
+          <div class="meal-icon ${m.iconClass}">${m.icon}</div>
+          <span class="meal-label">${m.label}</span>
+        </div>
+        <span class="meal-time-tag">${m.time}</span>
+      </div>
+      ${dcHtml}
+      <div class="card-section">
+        <div class="section-eyebrow"><i class="ti ti-backpack" style="font-size:12px" aria-hidden="true"></i> ${packLabel}</div>
+        <div class="chips-row">
+          ${chipsHtml}
+          <button class="chip-add" onclick="openSheet('${m.key}','${m.label}')"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i> add</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderWeek() {
+  const today = new Date();
+  const todayDow = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (todayDow === 0 ? 6 : todayDow - 1));
+
+  let html = '';
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const dayOffset = Math.round((d - today) / 86400000);
+    const key = (() => { const dd = new Date(d); return `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`; })();
+    const wl = (() => {
+      const start = new Date(S.weekAStart);
+      const weeks = Math.floor((d - start) / (7 * 86400000));
+      return ((weeks % 2) + 2) % 2 === 0 ? 'A' : 'B';
+    })();
+    
+    const meals = S.meals[key] || { morning:[], lunch:[], afternoon:[], dcAccepted:{} };
+    const dcAccepted = meals.dcAccepted || {};
+    const isToday = dayOffset === 0;
+    const dayName = DAYS[d.getDay()];
+
+    const mealSlots = [
+      { key: 'morning', cssClass: 'morning' },
+      { key: 'lunch', cssClass: 'lunch' },
+      { key: 'afternoon', cssClass: 'afternoon' }
+    ];
+
+    let itemChips = '';
+    let totalItems = 0;
+    let renderedCount = 0;
+
+    mealSlots.forEach(slot => {
+      const items = meals[slot.key] || [];
+      totalItems += items.length;
+    });
+
+    if (totalItems === 0) {
+      itemChips = `<span class="week-chip empty">Nothing packed</span>`;
+    } else {
+      mealSlots.forEach(slot => {
+        const items = meals[slot.key] || [];
+        items.forEach(f => {
+          if (renderedCount < 5) {
+            itemChips += `<span class="week-chip ${slot.cssClass}">${escH(f)}</span>`;
+            renderedCount++;
+          }
+        });
+      });
+      if (totalItems > 5) {
+        itemChips += `<span class="week-chip more">+${totalItems - 5} more</span>`;
+      }
+    }
+
+    const dc = S.daycareSnacks[wl] || { morning: {}, afternoon: {} };
+    let score = 0;
+    
+    const morningSnackText = (dc.morning && dc.morning[dayName]) ? dc.morning[dayName] : '';
+    const afternoonSnackText = (dc.afternoon && dc.afternoon[dayName]) ? dc.afternoon[dayName] : '';
+
+    const morningAccepted = dcAccepted.morning !== undefined ? dcAccepted.morning : hasTwoItems(morningSnackText);
+    const afternoonAccepted = dcAccepted.afternoon !== undefined ? dcAccepted.afternoon : hasTwoItems(afternoonSnackText);
+
+    if ((meals.morning && meals.morning.length > 0) || (morningAccepted && morningSnackText && morningSnackText.trim())) score++;
+    if (meals.lunch && meals.lunch.length > 0) score++;
+    if ((meals.afternoon && meals.afternoon.length > 0) || (afternoonAccepted && afternoonSnackText && afternoonSnackText.trim())) score++;
+
+    const badgeClass = score === 3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
+    const badgeContent = score === 3 
+      ? `<i class="ti ti-circle-check" style="font-size:13px"></i> 3/3` 
+      : `${score}/3`;
+
+    html += `<div class="week-day-row${isToday?' today':''}" onclick="S.offset=${dayOffset};save();switchTab('today');renderToday()">
+      <div class="week-day-left">
+        <span class="week-day-name">${dayName.slice(0,3)}</span>
+        <span class="week-day-num">${d.getDate()}</span>
+      </div>
+      <div class="week-day-content">
+        <span class="week-badge-small">${wl}</span>
+        ${itemChips}
+      </div>
+      <div class="${badgeClass}">${badgeContent}</div>
+    </div>`;
+  }
+  
+  const weekGridEl = document.getElementById('week-grid');
+  if (weekGridEl) weekGridEl.innerHTML = html;
+}
+
+function renderSettings() {
+  if (!S.weekAStart) S.weekAStart = '2026-06-01';
+  const startInput = document.getElementById('week-a-start');
+  if (startInput) startInput.value = S.weekAStart;
+
+  ['A', 'B'].forEach(wk => {
+    const daysHtml = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => {
+      const morningVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].morning) ? (S.daycareSnacks[wk].morning[day] || '') : '';
+      const afternoonVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].afternoon) ? (S.daycareSnacks[wk].afternoon[day] || '') : '';
+      const topBorder = idx === 0 ? 'border-top:none;' : 'border-top:0.5px solid var(--border);';
+      
+      return `
+        <div class="daycare-input-block" style="${topBorder}">
+          <div class="daycare-input-label" style="color: var(--text-secondary); font-weight:700; margin-bottom: 2px;">${day}</div>
+          <div style="display:flex; gap:8px;">
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="AM Snack" value="${escH(morningVal)}" oninput="saveDaycareSnack('${wk}','morning','${day}',this.value)" />
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="PM Snack" value="${escH(afternoonVal)}" oninput="saveDaycareSnack('${wk}','afternoon','${day}',this.value)" />
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    const areaEl = document.getElementById(`settings-dc-${wk}-area`);
+    if (areaEl) areaEl.innerHTML = daysHtml;
+  });
+
+  const area = document.getElementById('settings-favs-area');
+  if (area) {
+    const chips = S.favorites.map((f, idx) =>
+      `<span class="fav-manage-chip">${escH(f)}<button onclick="removeFav(${idx})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`
+    ).join('');
+    area.innerHTML = `
+      <div class="favs-chips-wrap">${chips}</div>
+      <div class="fav-add-row" style="margin-top:10px">
+        <input class="fav-add-input" id="new-fav-input" placeholder="Add a favorite food…" onkeydown="if(event.key==='Enter')addFav()" />
+        <button class="fav-add-btn" onclick="addFav()">Save</button>
+      </div>`;
+  }
+}
+function removeFav(index) {
+  S.favorites.splice(index, 1);
+  save(); renderSettings();
+}
+
+function addFav() {
+  const inp = document.getElementById('new-fav-input');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val || S.favorites.includes(val)) return;
+  S.favorites.unshift(val); inp.value = '';
+  save(); 
+  renderSettings();
+  const newInp = document.getElementById('new-fav-input');
+  if (newInp) newInp.focus();
+}
+
+function exportBackup() {
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const now = new Date();
+  const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const a = document.createElement('a');
+  a.href = url; a.download = `lunchbox-meals-backup-${stamp}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.daycareSnacks || !parsed.favorites) throw new Error('Invalid file');
+      S = parsed;
+      save();
+      renderAll();
+      renderSettings();
+      showToast('Data restored successfully!', 'success');
+    } catch {
+      showToast("Could not read that file. Make sure it's a valid backup.", 'error');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('restore-toast');
+  if (!t) return;
+  t.textContent = msg; t.className = `restore-toast ${type}`;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+function confirmReset() {
+  if (confirm("Reset all data? This cannot be undone. Export a backup first!")) {
+    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    save(); renderAll(); renderSettings();
+    showToast('All data has been reset.', 'success');
+  }
+}
+
+function renderAll() { 
+  renderToday(); 
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initStorage();
+  renderAll();
+});
+</script>
+</body>
+</html>
