@@ -378,11 +378,17 @@ function weekLetter(o) {
   return ((weeks % 2) + 2) % 2 === 0 ? 'A' : 'B';
 }
 function getMeals(key) {
-  if (!S.meals[key]) S.meals[key] = { morning: [], lunch: [], afternoon: [], dcAccepted: { morning: true, afternoon: true } };
-  if (!S.meals[key].dcAccepted) S.meals[key].dcAccepted = { morning: true, afternoon: true };
+  if (!S.meals[key]) S.meals[key] = { morning: [], lunch: [], afternoon: [], dcAccepted: {} };
+  if (!S.meals[key].dcAccepted) S.meals[key].dcAccepted = {};
   return S.meals[key];
 }
 function isWeekend(o) { const d = dateForOffset(o).getDay(); return d === 0 || d === 6; }
+
+// Smart Check helper to see if daycare description contains multiple items
+function hasTwoItems(text) {
+  if (!text) return false;
+  return text.includes('&') || /\band\b/i.test(text);
+}
 
 // ── Tab switching ──
 function switchTab(name) {
@@ -451,8 +457,12 @@ function removeItem(type, food) {
 
 function toggleDcAccept(slot) {
   const key = dateKey(S.offset);
+  const wl = weekLetter(S.offset);
+  const dc = S.daycareSnacks[wl];
   const meals = getMeals(key);
-  meals.dcAccepted[slot] = !meals.dcAccepted[slot];
+  
+  const currentVal = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(dc[slot]);
+  meals.dcAccepted[slot] = !currentVal;
   save(); renderToday();
 }
 
@@ -486,7 +496,7 @@ function renderToday() {
 
   const dc = S.daycareSnacks[wl];
   const meals = getMeals(key);
-  const dcAccepted = meals.dcAccepted || { morning: true, afternoon: true };
+  const dcAccepted = meals.dcAccepted || {};
 
   const mealDefs = [
     { key:'morning',   label:'Morning snack',   icon:'<i class="ti ti-sun" aria-hidden="true"></i>',    iconClass:'morning',   time:'9:00 AM',  dcSnack: dc.morning   },
@@ -497,13 +507,13 @@ function renderToday() {
   container.innerHTML = mealDefs.map(m => {
     const items = meals[m.key] || [];
     const packLabel = m.dcSnack ? 'Also packing' : 'Packing';
-    const isAccepted = dcAccepted[m.key] !== false;
+    const isAccepted = dcAccepted[m.key] !== undefined ? dcAccepted[m.key] : hasTwoItems(m.dcSnack);
 
     const dcHtml = m.dcSnack ? `
       <div class="card-section">
         <div class="section-eyebrow"><i class="ti ti-building-community" style="font-size:12px" aria-hidden="true"></i> Daycare is offering</div>
         <div class="daycare-offered" style="${isAccepted ? '' : 'background-color: var(--surface2); border: 0.5px dashed var(--border-med);'}">
-          <span class="daycare-offered-text" style="${isAccepted ? '' : 'text-decoration: line-through; opacity: 0.4;'}">${escH(m.dcSnack || 'Not set in settings')}</span>
+          <span class="daycare-offered-text">${escH(m.dcSnack || 'Not set in settings')}</span>
           <button class="dc-toggle-btn ${isAccepted ? 'active' : 'supplement'}" onclick="toggleDcAccept('${m.key}')">
             ${isAccepted ? '✓ Covered' : '⚠️ Supplementing'}
           </button>
@@ -553,11 +563,10 @@ function renderWeek() {
       return ((weeks % 2) + 2) % 2 === 0 ? 'A' : 'B';
     })();
     
-    const meals = S.meals[key] || { morning:[], lunch:[], afternoon:[], dcAccepted:{morning:true, afternoon:true} };
-    const dcAccepted = meals.dcAccepted || { morning: true, afternoon: true };
+    const meals = S.meals[key] || { morning:[], lunch:[], afternoon:[], dcAccepted:{} };
+    const dcAccepted = meals.dcAccepted || {};
     const isToday = dayOffset === 0;
 
-    // Separate items by meal type to enable clean color-coding
     const mealSlots = [
       { key: 'morning', cssClass: 'morning' },
       { key: 'lunch', cssClass: 'lunch' },
@@ -590,13 +599,16 @@ function renderWeek() {
       }
     }
 
-    // Calculate dynamic completeness logic based on toggle status
+    // Dynamic verification calculation using hasTwoItems evaluation
     const dc = S.daycareSnacks[wl] || { morning: '', afternoon: '' };
     let score = 0;
     
-    if ((meals.morning && meals.morning.length > 0) || (dcAccepted.morning !== false && dc.morning && dc.morning.trim())) score++;
+    const morningAccepted = dcAccepted.morning !== undefined ? dcAccepted.morning : hasTwoItems(dc.morning);
+    const afternoonAccepted = dcAccepted.afternoon !== undefined ? dcAccepted.afternoon : hasTwoItems(dc.afternoon);
+
+    if ((meals.morning && meals.morning.length > 0) || (morningAccepted && dc.morning && dc.morning.trim())) score++;
     if (meals.lunch && meals.lunch.length > 0) score++;
-    if ((meals.afternoon && meals.afternoon.length > 0) || (dcAccepted.afternoon !== false && dc.afternoon && dc.afternoon.trim())) score++;
+    if ((meals.afternoon && meals.afternoon.length > 0) || (afternoonAccepted && dc.afternoon && dc.afternoon.trim())) score++;
 
     const badgeClass = score === 3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
     const badgeContent = score === 3 
