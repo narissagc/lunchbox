@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Lunchbox</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -49,13 +49,13 @@
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
 
-  html, body { height: 100%; width: 100%; overflow: hidden; background: #1C1B18; }
-  body { font-family: var(--font); display: flex; justify-content: center; align-items: center; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; width: 100%; background: var(--bg); }
+  body { font-family: var(--font); display: flex; justify-content: center; align-items: stretch; -webkit-font-smoothing: antialiased; }
 
-  .phone-wrap { width: 100%; max-width: 430px; height: 100%; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; overflow: hidden; }
+  .phone-wrap { width: 100%; max-width: 430px; height: 100%; display: flex; flex-direction: column; background: var(--bg); position: relative; }
 
   /* VIEWS */
-  .view { display: none; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+  .view { display: none; flex-direction: column; flex: 1; min-height: 0; }
   .view.active { display: flex; }
 
   /* ── TOP NAV ── */
@@ -71,7 +71,7 @@
   .today-btn:hover { background: var(--amber-600); color: #fff; }
 
   /* ── MEALS SCROLL ── */
-  .meals-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .meals-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; }
 
   /* ── MEAL CARD ── */
   .meal-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
@@ -174,7 +174,7 @@
   .fav-add-row { display: flex; gap: 8px; }
   .fav-add-input { flex: 1; font-size: 13px; font-family: var(--font); border: 0.5px solid var(--border-med); border-radius: 8px; padding: 8px 10px; background: var(--surface2); color: var(--text-primary); }
   .fav-add-input:focus { outline: none; border-color: var(--purple-600); }
-  .fav-add-btn { padding: 8px 14px; border-radius: 8px; background: var(--purple-50); color: var(--purple-800); border: none; font-size: 13px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+  .favs-manage .fav-add-btn { padding: 8px 14px; border-radius: 8px; background: var(--purple-50); color: var(--purple-800); border: none; font-size: 13px; font-weight: 700; font-family: var(--font); cursor: pointer; }
 
   /* ── BACKUP ── */
   .backup-area { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
@@ -356,7 +356,7 @@ let S;
 
 function initStorage() {
   try {
-    S = JSON.parse(localStorage.getItem('lunchbox_v5_final') || 'null');
+    S = JSON.parse(localStorage.getItem('lunchbox_v5_final'));
   } catch (e) {
     S = null;
   }
@@ -402,7 +402,6 @@ function getMeals(key) {
 }
 function isWeekend(o) { const d = dateForOffset(o).getDay(); return d === 0 || d === 6; }
 
-// Smart pattern detection check matching combinations containing '&' or 'and'
 function hasTwoItems(text) {
   if (!text) return false;
   return text.includes('&') || /\band\b/i.test(text);
@@ -462,6 +461,7 @@ function toggleFav(index) {
 }
 function addFromTyped() {
   const inp = document.getElementById('sheet-input');
+  if (!inp) return;
   const val = inp.value.trim(); if (!val) return;
   const key = dateKey(S.offset);
   const meals = getMeals(key);
@@ -561,3 +561,229 @@ function renderToday() {
 
     const chipsHtml = items.length
       ? items.map((f, idx) => `<span class="chip packed">${escH(f)}<button class="chip-remove" onclick="removeItem('${m.key}', ${idx})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`).join('')
+      : `<span class="nothing-yet">Nothing packed yet</span>`;
+
+    return `<div class="meal-card">
+      <div class="meal-card-head">
+        <div class="meal-title-row">
+          <div class="meal-icon ${m.iconClass}">${m.icon}</div>
+          <span class="meal-label">${m.label}</span>
+        </div>
+        <span class="meal-time-tag">${m.time}</span>
+      </div>
+      ${dcHtml}
+      <div class="card-section">
+        <div class="section-eyebrow"><i class="ti ti-backpack" style="font-size:12px" aria-hidden="true"></i> ${packLabel}</div>
+        <div class="chips-row">
+          ${chipsHtml}
+          <button class="chip-add" onclick="openSheet('${m.key}','${m.label}')"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i> add</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Render Week ──
+function renderWeek() {
+  const today = new Date();
+  const todayDow = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (todayDow === 0 ? 6 : todayDow - 1));
+
+  let html = '';
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const dayOffset = Math.round((d - today) / 86400000);
+    const key = (() => { const dd = new Date(d); return `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`; })();
+    const wl = (() => {
+      const start = new Date(S.weekAStart);
+      const weeks = Math.floor((d - start) / (7 * 86400000));
+      return ((weeks % 2) + 2) % 2 === 0 ? 'A' : 'B';
+    })();
+    
+    const meals = S.meals[key] || { morning:[], lunch:[], afternoon:[], dcAccepted:{} };
+    const dcAccepted = meals.dcAccepted || {};
+    const isToday = dayOffset === 0;
+    const dayName = DAYS[d.getDay()];
+
+    const mealSlots = [
+      { key: 'morning', cssClass: 'morning' },
+      { key: 'lunch', cssClass: 'lunch' },
+      { key: 'afternoon', cssClass: 'afternoon' }
+    ];
+
+    let itemChips = '';
+    let totalItems = 0;
+    let renderedCount = 0;
+
+    mealSlots.forEach(slot => {
+      const items = meals[slot.key] || [];
+      totalItems += items.length;
+    });
+
+    if (totalItems === 0) {
+      itemChips = `<span class="week-chip empty">Nothing packed</span>`;
+    } else {
+      mealSlots.forEach(slot => {
+        const items = meals[slot.key] || [];
+        items.forEach(f => {
+          if (renderedCount < 5) {
+            itemChips += `<span class="week-chip ${slot.cssClass}">${escH(f)}</span>`;
+            renderedCount++;
+          }
+        });
+      });
+      if (totalItems > 5) {
+        itemChips += `<span class="week-chip more">+${totalItems - 5} more</span>`;
+      }
+    }
+
+    const dc = S.daycareSnacks[wl] || { morning: {}, afternoon: {} };
+    let score = 0;
+    
+    const morningSnackText = (dc.morning && dc.morning[dayName]) ? dc.morning[dayName] : '';
+    const afternoonSnackText = (dc.afternoon && dc.afternoon[dayName]) ? dc.afternoon[dayName] : '';
+
+    const morningAccepted = dcAccepted.morning !== undefined ? dcAccepted.morning : hasTwoItems(morningSnackText);
+    const afternoonAccepted = dcAccepted.afternoon !== undefined ? dcAccepted.afternoon : hasTwoItems(afternoonSnackText);
+
+    if ((meals.morning && meals.morning.length > 0) || (morningAccepted && morningSnackText && morningSnackText.trim())) score++;
+    if (meals.lunch && meals.lunch.length > 0) score++;
+    if ((meals.afternoon && meals.afternoon.length > 0) || (afternoonAccepted && afternoonSnackText && afternoonSnackText.trim())) score++;
+
+    const badgeClass = score === 3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
+    const badgeContent = score === 3 
+      ? `<i class="ti ti-circle-check" style="font-size:13px"></i> 3/3` 
+      : `${score}/3`;
+
+    html += `<div class="week-day-row${isToday?' today':''}" onclick="S.offset=${dayOffset};save();switchTab('today');renderToday()">
+      <div class="week-day-left">
+        <span class="week-day-name">${dayName.slice(0,3)}</span>
+        <span class="week-day-num">${d.getDate()}</span>
+      </div>
+      <div class="week-day-content">
+        <span class="week-badge-small">${wl}</span>
+        ${itemChips}
+      </div>
+      <div class="${badgeClass}">${badgeContent}</div>
+    </div>`;
+  }
+  
+  const weekGridEl = document.getElementById('week-grid');
+  if (weekGridEl) weekGridEl.innerHTML = html;
+}
+
+// ── Render Settings ──
+function renderSettings() {
+  if (!S.weekAStart) S.weekAStart = '2026-06-01';
+  const startInput = document.getElementById('week-a-start');
+  if (startInput) startInput.value = S.weekAStart;
+
+  ['A', 'B'].forEach(wk => {
+    const daysHtml = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => {
+      const morningVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].morning) ? (S.daycareSnacks[wk].morning[day] || '') : '';
+      const afternoonVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].afternoon) ? (S.daycareSnacks[wk].afternoon[day] || '') : '';
+      const topBorder = idx === 0 ? 'border-top:none;' : 'border-top:0.5px solid var(--border);';
+      
+      return `
+        <div class="daycare-input-block" style="${topBorder}">
+          <div class="daycare-input-label" style="color: var(--text-secondary); font-weight:700; margin-bottom: 2px;">${day}</div>
+          <div style="display:flex; gap:8px;">
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="AM Snack" value="${escH(morningVal)}" oninput="saveDaycareSnack('${wk}','morning','${day}',this.value)" />
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="PM Snack" value="${escH(afternoonVal)}" oninput="saveDaycareSnack('${wk}','afternoon','${day}',this.value)" />
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    const areaEl = document.getElementById(`settings-dc-${wk}-area`);
+    if (areaEl) areaEl.innerHTML = daysHtml;
+  });
+
+  const area = document.getElementById('settings-favs-area');
+  if (area) {
+    const chips = S.favorites.map((f, idx) =>
+      `<span class="fav-manage-chip">${escH(f)}<button onclick="removeFav(${idx})" aria-label="Remove ${escH(f)}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button></span>`
+    ).join('');
+    area.innerHTML = `
+      <div class="favs-chips-wrap">${chips}</div>
+      <div class="fav-add-row" style="margin-top:10px">
+        <input class="fav-add-input" id="new-fav-input" placeholder="Add a favorite food…" onkeydown="if(event.key==='Enter')addFav()" />
+        <button class="fav-add-btn" onclick="addFav()">Save</button>
+      </div>`;
+  }
+}
+function removeFav(index) {
+  S.favorites.splice(index, 1);
+  save(); renderSettings();
+}
+function addFav() {
+  const inp = document.getElementById('new-fav-input');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val || S.favorites.includes(val)) return;
+  S.favorites.unshift(val); inp.value = '';
+  save(); renderSettings();
+}
+
+// ── Backup / Restore ──
+function exportBackup() {
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const now = new Date();
+  const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const a = document.createElement('a');
+  a.href = url; a.download = `lunchbox-meals-backup-${stamp}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.daycareSnacks || !parsed.favorites) throw new Error('Invalid file');
+      S = parsed;
+      save();
+      renderAll();
+      renderSettings();
+      showToast('Data restored successfully!', 'success');
+    } catch {
+      showToast("Could not read that file. Make sure it's a valid backup.", 'error');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('restore-toast');
+  if (!t) return;
+  t.textContent = msg; t.className = `restore-toast ${type}`;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+function confirmReset() {
+  if (confirm("Reset all data? This cannot be undone. Export a backup first!")) {
+    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    save(); renderAll(); renderSettings();
+    showToast('All data has been reset.', 'success');
+  }
+}
+
+function renderAll() { 
+  renderToday(); 
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initStorage();
+  renderAll();
+});
+</script>
+</body>
+</html>
