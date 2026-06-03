@@ -59,9 +59,9 @@
     .phone-wrap { max-height: 100dvh; box-shadow: none; }
   }
 
-  /* VIEWS — FIX: Removed height: 100% to let flex layout properly size the container */
-  .view { display: none; flex-direction: column; flex: 1; min-height: 0; width: 100%; overflow: hidden; }
-  .view.active { display: flex; }
+  /* VIEWS — Cleaned up display hierarchy to allow true flexible height allocations */
+  .view { display: none; width: 100%; overflow: hidden; }
+  .view.active { display: flex; flex-direction: column; flex: 1; min-height: 0; height: auto; }
 
   /* ── TOP NAV ── */
   .top-bar { background: var(--surface); padding: 16px 20px 14px; border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
@@ -76,7 +76,7 @@
   .today-btn:hover { background: var(--amber-600); color: #fff; }
 
   /* ── MEALS SCROLL ── */
-  .meals-scroll, .week-scroll, .settings-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 32px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .meals-scroll, .week-scroll, .settings-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 40px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; min-height: 0; }
 
   /* ── MEAL CARD ── */
   .meal-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
@@ -431,10 +431,10 @@ function openSheet(type, label) {
   setTimeout(() => document.getElementById('sheet-input').focus(), 350);
 }
 
-/* FIX: Explicitly blur input to collapse mobile keyboard safely during transition */
 function closeSheet() {
-  const inputEl = document.getElementById('sheet-input');
-  if (inputEl) inputEl.blur(); 
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
   document.getElementById('sheet-overlay').classList.remove('open');
   document.getElementById('sheet').classList.remove('open');
   renderToday();
@@ -457,16 +457,20 @@ function toggleFav(index) {
   else meals[sheetMealType].push(food);
   save(); renderSheetFavs(); renderToday();
 }
+
+/* FIX: The Add button now ALWAYS triggers closeSheet() even if the text input row is empty */
 function addFromTyped() {
   const inp = document.getElementById('sheet-input');
-  if (!inp) return;
-  const val = inp.value.trim(); if (!val) return;
-  const key = dateKey(S.offset);
-  const meals = getMeals(key);
-  if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
-  if (!S.favorites.includes(val)) S.favorites.unshift(val);
-  inp.value = '';
-  save();
+  if (!inp) { closeSheet(); return; }
+  const val = inp.value.trim(); 
+  if (val) {
+    const key = dateKey(S.offset);
+    const meals = getMeals(key);
+    if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
+    if (!S.favorites.includes(val)) S.favorites.unshift(val);
+    inp.value = '';
+    save();
+  }
   closeSheet(); 
 }
 
@@ -711,13 +715,18 @@ function removeFav(index) {
   S.favorites.splice(index, 1);
   save(); renderSettings();
 }
+
+/* FIX: Refocuses input box automatically after clicking save or enter to prevent keyboard flash drops */
 function addFav() {
   const inp = document.getElementById('new-fav-input');
   if (!inp) return;
   const val = inp.value.trim();
   if (!val || S.favorites.includes(val)) return;
   S.favorites.unshift(val); inp.value = '';
-  save(); renderSettings();
+  save(); 
+  renderSettings();
+  const newInp = document.getElementById('new-fav-input');
+  if (newInp) newInp.focus();
 }
 
 function exportBackup() {
