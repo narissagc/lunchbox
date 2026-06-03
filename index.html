@@ -59,9 +59,9 @@
     .phone-wrap { max-height: 100dvh; box-shadow: none; }
   }
 
-  /* VIEWS — Cleaned up display hierarchy to allow true flexible height allocations */
+  /* VIEWS — Optimized viewport layout boundaries */
   .view { display: none; width: 100%; overflow: hidden; }
-  .view.active { display: flex; flex-direction: column; flex: 1; min-height: 0; height: auto; }
+  .view.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
   /* ── TOP NAV ── */
   .top-bar { background: var(--surface); padding: 16px 20px 14px; border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
@@ -77,6 +77,9 @@
 
   /* ── MEALS SCROLL ── */
   .meals-scroll, .week-scroll, .settings-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 40px; display: flex; flex-direction: column; gap: 16px; -webkit-overflow-scrolling: touch; min-height: 0; }
+
+  /* FIX: Explicitly prevents the browser from compressing cards inside layout lists */
+  .meals-scroll > *, .week-scroll > *, .settings-scroll > * { flex-shrink: 0; }
 
   /* ── MEAL CARD ── */
   .meal-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
@@ -458,7 +461,6 @@ function toggleFav(index) {
   save(); renderSheetFavs(); renderToday();
 }
 
-/* FIX: The Add button now ALWAYS triggers closeSheet() even if the text input row is empty */
 function addFromTyped() {
   const inp = document.getElementById('sheet-input');
   if (!inp) { closeSheet(); return; }
@@ -716,7 +718,6 @@ function removeFav(index) {
   save(); renderSettings();
 }
 
-/* FIX: Refocuses input box automatically after clicking save or enter to prevent keyboard flash drops */
 function addFav() {
   const inp = document.getElementById('new-fav-input');
   if (!inp) return;
