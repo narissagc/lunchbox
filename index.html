@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>Daycare Meal Planner</title>
+<title>Lunchbox</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
@@ -217,7 +217,7 @@
   <div class="view active" id="view-today">
     <div class="top-bar">
       <div class="app-title">
-        <span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Daycare Meal Planner</span>
+        <span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Lunchbox</span>
         <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
       </div>
       <div class="day-nav">
@@ -446,7 +446,9 @@ function addFromTyped() {
   const meals = getMeals(key);
   if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
   if (!S.favorites.includes(val)) S.favorites.unshift(val);
-  inp.value = ''; save(); renderSheetFavs(); renderToday();
+  inp.value = '';
+  inp.focus(); // Keep focus active on the text box for rapid typing
+  save(); renderSheetFavs(); renderToday();
 }
 function removeItem(type, food) {
   const key = dateKey(S.offset);
@@ -669,7 +671,7 @@ function exportBackup() {
   const now = new Date();
   const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const a = document.createElement('a');
-  a.href = url; a.download = `daycare-meals-backup-${stamp}.json`;
+  a.href = url; a.download = `lunchbox-meals-backup-${stamp}.json`;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
 }
