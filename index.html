@@ -235,14 +235,16 @@
   </div>
 
   <div class="view" id="view-week">
-    <div class="top-bar" style="padding-bottom:14px">
+    <div class="top-bar" style="padding-bottom:14px; display:flex; align-items:center; gap:12px;">
+      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back to Today" style="width:34px; height:34px; font-size:16px;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
       <div class="app-title" style="margin-bottom:0"><i class="ti ti-calendar-week" style="font-size:14px" aria-hidden="true"></i> This week</div>
     </div>
     <div class="week-scroll"><div class="week-grid" id="week-grid"></div></div>
   </div>
 
   <div class="view" id="view-settings">
-    <div class="top-bar" style="padding-bottom:14px">
+    <div class="top-bar" style="padding-bottom:14px; display:flex; align-items:center; gap:12px;">
+      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back to Today" style="width:34px; height:34px; font-size:16px;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
       <div class="app-title" style="margin-bottom:0"><i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Settings</div>
     </div>
     <div class="settings-scroll">
@@ -360,7 +362,6 @@ const DEFAULT_STATE = {
 
 let S = JSON.parse(localStorage.getItem('daycareApp_v2') || 'null') || JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-// Dynamic self-repair to prevent crashes caused by changes in older versions of the app data
 if (!S.daycareSnacks) S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
 if (!S.daycareSnacks.A) S.daycareSnacks.A = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.A));
 if (!S.daycareSnacks.B) S.daycareSnacks.B = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.B));
