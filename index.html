@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Lunchbox" />
-<meta name="theme-color" content="#ffe5ec" />
+<meta name="theme-color" content="#ff9aa2" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
@@ -38,12 +38,9 @@
     --amber-50: #ffdac1;
     --amber-600: #d99a73;
     --amber-800: #704214;
-    
-    /* ── SWAPPED RED TRACK OUT FOR TRUE PINK ── */
     --pink-50: #ffe5ec;
     --pink-600: #ff758f;
     --pink-800: #a4133c;
-    
     --gray-50: #f7f3c7;
     --gray-600: #666127;
     
@@ -93,9 +90,9 @@
   .no-school-label input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--purple-600); cursor: pointer; }
   .no-school-badge { font-size: 10px; font-weight: 700; background: var(--amber-50); color: var(--amber-800); padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
 
-  .meals-scroll, .week-scroll, .settings-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 120px; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .meals-scroll, .week-scroll, .settings-scroll, .stats-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 120px; -webkit-overflow-scrolling: touch; min-height: 0; }
 
-  .meal-card, .week-grid, .settings-section { margin-bottom: 16px; }
+  .meal-card, .week-grid, .settings-section, .stats-section { margin-bottom: 16px; }
 
   .meal-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
   .meal-card-head { padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; }
@@ -103,10 +100,7 @@
   .meal-icon { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
   .meal-icon.morning { background: var(--amber-50); color: var(--amber-800); }
   .meal-icon.lunch   { background: var(--teal-50); color: var(--teal-800); }
-  
-  /* ── PINK SNACK ICON ADJUSTMENT ── */
   .meal-icon.afternoon { background: var(--pink-50); color: var(--pink-800); }
-  
   .meal-label { font-size: 15px; font-weight: 700; color: var(--text-primary); }
   .meal-time-tag { font-size: 11px; color: var(--text-hint); font-weight: 500; }
 
@@ -165,8 +159,11 @@
   .week-done-badge.complete { background: var(--teal-50); color: var(--teal-800); }
   .week-done-badge.incomplete { background: var(--surface2); color: var(--text-secondary); border: 0.5px solid var(--border-med); }
 
-  .settings-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
-  .settings-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); padding: 14px 16px 10px; }
+  .settings-section, .stats-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+  
+  /* ── REQ: SECTION TITLES CENTERED ACROSS APP ── */
+  .settings-section-title, .stats-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); padding: 14px 16px 10px; display: flex; justify-content: center; align-items: center; position: relative; }
+  
   .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 0.5px solid var(--border); gap: 12px; }
   .settings-row:first-of-type { border-top: none; }
   .settings-row label { font-size: 14px; font-weight: 600; color: var(--text-primary); flex-shrink: 0; }
@@ -202,9 +199,7 @@
     font-size: 12px;
     transition: transform 0.2s ease;
   }
-  details[open] .favs-cat-summary::after {
-    transform: rotate(180deg);
-  }
+  details[open] .favs-cat-summary::after { transform: rotate(180deg); }
   
   .fav-mgmt-content-box { display: flex; flex-direction: column; padding-bottom: 8px; }
   .fav-mgmt-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; gap: 10px; border-bottom: 0.5px solid rgba(0,0,0,0.03); }
@@ -252,6 +247,28 @@
   .fav-chip { font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 20px; border: 0.5px solid var(--border-med); background: var(--surface2); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.12s; }
   .fav-chip.selected { background: var(--teal-50); color: var(--teal-800); border-color: transparent; }
   .fav-chip:hover:not(.selected) { background: var(--surface2); border-color: var(--text-hint); }
+
+  .stats-toggle-row { display: flex; background: var(--surface2); padding: 3px; border-radius: 10px; margin: 4px 0 16px; gap: 4px; }
+  .stats-toggle-btn { flex: 1; border: none; background: none; font-family: var(--font); font-size: 12px; font-weight: 700; padding: 6px 0; border-radius: 8px; cursor: pointer; color: var(--text-secondary); transition: all 0.15s ease; }
+  .stats-toggle-btn.active { background: var(--surface); color: var(--text-primary); box-shadow: var(--shadow); }
+  
+  .stat-macro-grid { display: flex; gap: 12px; margin-bottom: 16px; }
+  .stat-mini-card { flex: 1; background: var(--surface); border: 0.5px solid var(--border); padding: 12px 14px; border-radius: var(--radius-md); box-shadow: var(--shadow); }
+  .stat-mini-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-hint); letter-spacing: 0.04em; }
+  .stat-mini-val { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
+
+  .chart-row { display: flex; flex-direction: column; gap: 10px; padding: 12px 16px 16px; }
+  .chart-item { display: flex; flex-direction: column; gap: 4px; }
+  .chart-meta { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-primary); }
+  .chart-track { height: 10px; background: var(--surface2); border-radius: 5px; overflow: hidden; position: relative; }
+  .chart-fill { height: 100%; background: var(--purple-600); border-radius: 5px; transition: width 0.3s ease; }
+  
+  .leaderboard-list { display: flex; flex-direction: column; padding: 4px 16px 14px; }
+  .leader-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 0.5px solid var(--border); gap: 12px; }
+  .leader-row:last-of-type { border-bottom: none; }
+  .leader-rank { font-size: 12px; font-weight: 700; color: var(--text-hint); width: 18px; }
+  .leader-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .leader-count { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px; background: var(--surface2); color: var(--text-secondary); }
 </style>
 </head>
 <body>
@@ -284,6 +301,20 @@
     <div class="week-scroll"><div class="week-grid" id="week-grid"></div></div>
   </div>
 
+  <div class="view" id="view-stats">
+    <div class="top-bar" style="display:flex;align-items:center;gap:12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);">
+      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back" style="width:34px;height:34px;font-size:16px;flex-shrink:0;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <div class="app-title" style="margin-bottom:0;flex:1;">Insights</div>
+    </div>
+    <div class="stats-scroll">
+      <div class="stats-toggle-row">
+        <button class="stats-toggle-btn active" id="sb-30" onclick="setStatsWindow(30)">Last 30 Days</button>
+        <button class="stats-toggle-btn" id="sb-all" onclick="setStatsWindow(0)">All-Time</button>
+      </div>
+      <div id="stats-content-area"></div>
+    </div>
+  </div>
+
   <div class="view" id="view-settings">
     <div class="top-bar" style="display:flex;align-items:center;gap:12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);">
       <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back" style="width:34px;height:34px;font-size:16px;flex-shrink:0;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
@@ -292,9 +323,9 @@
     <div class="settings-scroll">
 
       <div class="settings-section">
-        <div class="settings-section-title" style="display:flex; justify-content:space-between; align-items:center; padding-right:16px;">
+        <div class="settings-section-title">
           <span>Favorites</span>
-          <button id="favs-edit-btn" onclick="toggleFavsEdit()" style="background:none; border:none; color:var(--purple-600); font-family:var(--font); font-size:12px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:0.02em;">Edit</button>
+          <button id="favs-edit-btn" onclick="toggleFavsEdit()" style="position: absolute; right: 16px; background:none; border:none; color:var(--purple-600); font-family:var(--font); font-size:12px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:0.02em;">Edit</button>
         </div>
         <div class="favs-manage" id="settings-favs-area"></div>
       </div>
@@ -346,6 +377,9 @@
     </button>
     <button class="tab-item" id="tab-week" onclick="switchTab('week')">
       <i class="ti ti-layout-grid" aria-hidden="true"></i><span>Week</span>
+    </button>
+    <button class="tab-item" id="tab-stats" onclick="switchTab('stats')">
+      <i class="ti ti-chart-bar" aria-hidden="true"></i><span>Stats</span>
     </button>
     <button class="tab-item" id="tab-settings" onclick="switchTab('settings')">
       <i class="ti ti-settings" aria-hidden="true"></i><span>Settings</span>
@@ -412,6 +446,7 @@ const DEFAULT_STATE = {
 
 let S;
 let isEditingFavs = false;
+let statsWindow = 30;
 
 function initStorage() {
   try { S = JSON.parse(localStorage.getItem('lunchbox_v8')); } catch(e) { S = null; }
@@ -474,13 +509,14 @@ function hasTwoItems(t) { return t && (t.includes('&') || /\band\b/i.test(t)); }
 function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function switchTab(name) {
-  ['today','week','settings'].forEach(n => {
+  ['today','week','stats','settings'].forEach(n => {
     const v = document.getElementById(`view-${n}`);
     const t = document.getElementById(`tab-${n}`);
     if (v) v.classList.toggle('active', n===name);
     if (t) t.classList.toggle('active', n===name);
   });
   if (name==='week') renderWeek();
+  if (name==='stats') renderStats();
   if (name==='settings') renderSettings();
 }
 
@@ -673,9 +709,7 @@ function renderToday() {
         <div class="daycare-offered" style="${isAccepted?'':'background:var(--surface2);border:0.5px dashed var(--border-med);'}">
           <i class="ti ti-building-community" style="font-size:14px; color:${isAccepted?'var(--purple-800)':'var(--text-secondary)'}"></i>
           <span class="daycare-offered-text" style="${isAccepted?'':'color:var(--text-secondary);'}">${escH(m.dcSnack)}</span>
-          <button class="dc-toggle-btn ${isAccepted?'active':'supplement'}" onclick="toggleDcAccept('${m.key}')">
-            ${isAccepted?'✓':'⚠️'}
-          </button>
+          <i class="ti ${isAccepted?'ti-circle-check':'ti-alert-circle'}" style="font-size:16px; color:${isAccepted?'var(--teal-600)':'var(--amber-600)'}"></i>
         </div>
       </div>
       <div class="card-divider"></div>` : '';
@@ -775,6 +809,102 @@ function renderWeek() {
     </div>`;
   }
   const g=document.getElementById('week-grid'); if(g) g.innerHTML=html;
+}
+
+function setStatsWindow(days) {
+  statsWindow = days;
+  document.getElementById('sb-30').classList.toggle('active', days===30);
+  document.getElementById('sb-all').classList.toggle('active', days===0);
+  renderStats();
+}
+
+function renderStats() {
+  const area = document.getElementById('stats-content-area');
+  if (!area) return;
+
+  const now = new Date();
+  const cutoffDate = new Date();
+  cutoffDate.setDate(now.getDate() - 30);
+
+  let foodRegistry = {};
+  let categoryRegistry = { 'Fruits & Veggies': 0, 'Mains': 0, 'Snacks': 0, 'Other': 0 };
+  let totalItemsCount = 0;
+  let singleBoxDaysCount = 0;
+
+  for (const [dateString, dayPayload] of Object.entries(S.meals)) {
+    if (statsWindow === 30) {
+      const parts = dateString.split('-');
+      const recordDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      if (recordDate < cutoffDate || recordDate > now) continue;
+    }
+
+    let itemsLoggedToday = false;
+    ['morning', 'lunch', 'afternoon'].forEach(slot => {
+      const foodArray = dayPayload[slot] || [];
+      foodArray.forEach(foodItem => {
+        foodRegistry[foodItem] = (foodRegistry[foodItem] || 0) + 1;
+        const mappedCat = getFavCategory(foodItem);
+        categoryRegistry[mappedCat]++;
+        totalItemsCount++;
+        itemsLoggedToday = true;
+      });
+    });
+    if (itemsLoggedToday) singleBoxDaysCount++;
+  }
+
+  let leaderboardSorted = Object.entries(foodRegistry).sort((a, b) => b[1] - a[1]);
+
+  let categoryChartHtml = '';
+  MASTER_CATEGORIES.forEach(cat => {
+    const rawVal = categoryRegistry[cat] || 0;
+    const computedPct = totalItemsCount > 0 ? Math.round((rawVal / totalItemsCount) * 100) : 0;
+    categoryChartHtml += `
+      <div class="chart-item">
+        <div class="chart-meta"><span>${cat}</span><span>${computedPct}% (${rawVal})</span></div>
+        <div class="chart-track"><div class="chart-fill" style="width: ${computedPct}%;"></div></div>
+      </div>
+    `;
+  });
+
+  let leaderboardHtml = '';
+  if (leaderboardSorted.length === 0) {
+    leaderboardHtml = '<div style="font-size:13px; color:var(--text-hint); text-align:center; padding:20px 0; font-style:italic;">No records logged in this timeframe.</div>';
+  } else {
+    leaderboardHtml = '<div class="leaderboard-list">';
+    leaderboardSorted.slice(0, 5).forEach(([name, quantity], idx) => {
+      leaderboardHtml += `
+        <div class="leader-row">
+          <span class="leader-rank">#${idx + 1}</span>
+          <span class="leader-name">${escH(name)}</span>
+          <span class="leader-count">${quantity}x</span>
+        </div>
+      `;
+    });
+    leaderboardHtml += '</div>';
+  }
+
+  area.innerHTML = `
+    <div class="stat-macro-grid">
+      <div class="stat-mini-card">
+        <div class="stat-mini-lbl">Days Packed</div>
+        <div class="stat-mini-val">${singleBoxDaysCount}</div>
+      </div>
+      <div class="stat-mini-card">
+        <div class="stat-mini-lbl">Total Items</div>
+        <div class="stat-mini-val">${totalItemsCount}</div>
+      </div>
+    </div>
+    
+    <div class="stats-section">
+      <div class="stats-section-title">Category Balance</div>
+      <div class="chart-row">${categoryChartHtml}</div>
+    </div>
+
+    <div class="stats-section">
+      <div class="stats-section-title">Hall of Fame</div>
+      ${leaderboardHtml}
+    </div>
+  `;
 }
 
 function renderSettings() {
