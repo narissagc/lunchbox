@@ -20,26 +20,33 @@
     --text-primary: #1C1B18;
     --text-secondary: #6B6A65;
     --text-hint: #A4A39F;
-    --purple-50: #EEEDFE; --purple-600: #534AB7; --purple-800: #3C3489;
-    --teal-50: #E1F5EE; --teal-600: #0F6E56; --teal-800: #085041;
-    --amber-50: #FAEEDA; --amber-600: #854F0B; --amber-800: #633806;
-    --blue-50: #E6F1FB; --blue-600: #185FA5; --blue-800: #0C447C;
-    --gray-50: #F1EFE8; --gray-600: #5F5E5A;
+    
+    /* Main UI Accent & Daycare Offered: Pastel Periwinkle Blue */
+    --purple-50: #c7ceff;  
+    --purple-600: #8fa0e6; 
+    --purple-800: #1a2b75;
+    
+    /* Lunch Card: Pastel Mint Green */
+    --teal-50: #b5ead7;    
+    --teal-600: #5cb395;
+    --teal-800: #0c513f;
+    
+    /* Morning Snack Card: Pastel Peach */
+    --amber-50: #ffdac1;   
+    --amber-600: #d99a73;
+    --amber-800: #704214;
+    
+    /* Afternoon Snack Card: Pastel Pink */
+    --blue-50: #ff9aa2;    
+    --blue-600: #e27c85;
+    --blue-800: #7a1f29;
+    
+    /* Settings & Highlights: Pastel Yellow */
+    --gray-50: #f7f3c7;    
+    --gray-600: #666127;
+    
     --radius-sm: 10px; --radius-md: 14px; --radius-lg: 20px;
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1A1917; --surface: #242321; --surface2: #2E2D2A;
-      --border: rgba(255,255,255,0.08); --border-med: rgba(255,255,255,0.14);
-      --text-primary: #F0EFE9; --text-secondary: #A4A39F; --text-hint: #6B6A65;
-      --purple-50: #2A2760; --purple-600: #AFA9EC; --purple-800: #CECBF6;
-      --teal-50: #062E21; --teal-600: #5DCAA5; --teal-800: #9FE1CB;
-      --amber-50: #2E1E05; --amber-600: #EF9F27; --amber-800: #FAC775;
-      --blue-50: #071F38; --blue-600: #85B7EB; --blue-800: #B5D4F4;
-      --gray-50: #2E2D2A; --gray-600: #B4B2A9;
-    }
   }
 
   html, body { height: 100%; }
@@ -53,15 +60,14 @@
 
   /* ── TOP NAV ── */
   .top-bar { background: var(--surface); padding: 16px 20px 14px; border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 20; }
-  .app-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .app-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
   .day-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .nav-arrow { width: 38px; height: 38px; border-radius: 50%; border: 0.5px solid var(--border-med); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 18px; flex-shrink: 0; transition: background 0.12s; }
   .nav-arrow:hover { background: var(--surface2); }
   .day-center { text-align: center; flex: 1; }
   .day-name { font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
   .day-meta { font-size: 13px; color: var(--text-secondary); margin-top: 3px; display: flex; align-items: center; gap: 7px; justify-content: center; }
-  .week-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
-  .today-btn { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--amber-50); color: var(--amber-800); border: none; cursor: pointer; font-family: var(--font); transition: background 0.12s; white-space: nowrap; }
+  .today-btn { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--amber-50); color: var(--amber-800); border: none; cursor: pointer; font-family: var(--font); transition: background 0.12s; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
   .today-btn:hover { background: var(--amber-600); color: #fff; }
 
   /* ── MEALS SCROLL ── */
@@ -72,9 +78,9 @@
   .meal-card-head { padding: 13px 16px 11px; display: flex; align-items: center; justify-content: space-between; }
   .meal-title-row { display: flex; align-items: center; gap: 10px; }
   .meal-icon { width: 34px; height: 34px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-  .meal-icon.morning { background: var(--amber-50); }
-  .meal-icon.lunch   { background: var(--teal-50); }
-  .meal-icon.afternoon { background: var(--blue-50); }
+  .meal-icon.morning { background: var(--amber-50); color: var(--amber-800); }
+  .meal-icon.lunch   { background: var(--teal-50); color: var(--teal-800); }
+  .meal-icon.afternoon { background: var(--blue-50); color: var(--blue-800); }
   .meal-label { font-size: 15px; font-weight: 700; color: var(--text-primary); }
   .meal-time-tag { font-size: 11px; color: var(--text-hint); font-weight: 500; }
 
@@ -85,7 +91,7 @@
   /* daycare offered row */
   .daycare-offered { background: var(--purple-50); border-radius: var(--radius-sm); padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .daycare-offered-text { font-size: 13px; font-weight: 600; color: var(--purple-800); flex: 1; }
-  .daycare-week-tag { font-size: 10px; font-weight: 700; color: var(--purple-600); opacity: 0.7; flex-shrink: 0; }
+  .daycare-week-tag { font-size: 10px; font-weight: 700; color: var(--purple-800); opacity: 0.7; flex-shrink: 0; }
 
   /* chips */
   .chips-row { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
@@ -113,7 +119,7 @@
   /* ── WEEK VIEW ── */
   .week-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px 24px; min-height: 0; }
   .week-grid { display: flex; flex-direction: column; gap: 2px; }
-  .week-day-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.1s; }
+  .week-day-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.1s; }
   .week-day-row:hover { background: var(--surface2); }
   .week-day-row.today { border-color: var(--purple-600); border-width: 1.5px; }
   .week-day-left { display: flex; flex-direction: column; align-items: center; min-width: 34px; }
@@ -122,8 +128,13 @@
   .week-day-row.today .week-day-num { color: var(--purple-600); }
   .week-day-content { flex: 1; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding-top: 3px; }
   .week-chip { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; background: var(--teal-50); color: var(--teal-800); }
-  .week-chip.empty { background: var(--gray-50); color: var(--text-hint); font-style: italic; font-weight: 500; }
-  .week-badge-small { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
+  .week-chip.empty { background: var(--gray-50); color: var(--gray-600); font-style: italic; font-weight: 500; }
+  .week-badge-small { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
+  
+  /* Done Badge Status Styles */
+  .week-done-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 3px; }
+  .week-done-badge.complete { background: var(--teal-50); color: var(--teal-800); }
+  .week-done-badge.incomplete { background: var(--surface2); color: var(--text-secondary); border: 0.5px solid var(--border-med); }
 
   /* ── SETTINGS VIEW ── */
   .settings-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
@@ -160,7 +171,7 @@
   .backup-btn i { font-size: 20px; flex-shrink: 0; }
   .backup-btn .btn-sub { font-size: 11px; font-weight: 500; color: var(--text-hint); display: block; margin-top: 1px; }
   .backup-btn.export i { color: var(--teal-600); }
-  .backup-btn.import i { color: var(--blue-600); }
+  .backup-btn.import i { color: var(--purple-600); }
   .backup-btn.danger i { color: #A32D2D; }
   .backup-btn.danger { color: #A32D2D; }
   .restore-toast { font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: var(--radius-sm); text-align: center; display: none; }
@@ -191,18 +202,18 @@
 <body>
 <div class="phone-wrap">
 
-  <!-- ── TODAY VIEW ── -->
   <div class="view active" id="view-today">
     <div class="top-bar">
-      <div class="app-title"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Daycare Meal Planner</div>
+      <div class="app-title">
+        <span style="display: flex; align-items: center; gap: 6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Daycare Meal Planner</span>
+        <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
+      </div>
       <div class="day-nav">
         <button class="nav-arrow" onclick="changeDay(-1)" aria-label="Previous day"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
         <div class="day-center">
           <div class="day-name" id="day-name">Monday</div>
           <div class="day-meta">
             <span id="day-date-label">Jun 2</span>
-            <span class="week-badge" id="week-badge">Week A</span>
-            <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
           </div>
         </div>
         <button class="nav-arrow" onclick="changeDay(1)" aria-label="Next day"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
@@ -211,7 +222,6 @@
     <div class="meals-scroll" id="meals-container"></div>
   </div>
 
-  <!-- ── WEEK VIEW ── -->
   <div class="view" id="view-week">
     <div class="top-bar" style="padding-bottom:14px">
       <div class="app-title" style="margin-bottom:0"><i class="ti ti-calendar-week" style="font-size:14px" aria-hidden="true"></i> This week</div>
@@ -219,7 +229,6 @@
     <div class="week-scroll"><div class="week-grid" id="week-grid"></div></div>
   </div>
 
-  <!-- ── SETTINGS VIEW ── -->
   <div class="view" id="view-settings">
     <div class="top-bar" style="padding-bottom:14px">
       <div class="app-title" style="margin-bottom:0"><i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Settings</div>
@@ -286,7 +295,6 @@
     </div>
   </div>
 
-  <!-- ── BOTTOM TAB BAR ── -->
   <div class="tab-bar">
     <button class="tab-item active" id="tab-today" onclick="switchTab('today')">
       <i class="ti ti-calendar-event" aria-hidden="true"></i>
@@ -304,7 +312,6 @@
 
 </div>
 
-<!-- ── ADD ITEM BOTTOM SHEET ── -->
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()">
   <div class="sheet" id="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
@@ -443,7 +450,6 @@ function renderToday() {
   const key = dateKey(S.offset);
   document.getElementById('day-name').textContent = DAYS[d.getDay()];
   document.getElementById('day-date-label').textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  document.getElementById('week-badge').textContent = `Week ${wl}`;
   const jumpBtn = document.getElementById('today-jump-btn');
   if (jumpBtn) jumpBtn.style.display = S.offset === 0 ? 'none' : 'inline-block';
 
@@ -507,10 +513,8 @@ function renderToday() {
 
 // ── Render Week ──
 function renderWeek() {
-  // Show Mon–Fri of the current week
   const today = new Date();
-  const todayDow = today.getDay(); // 0=Sun
-  // Find Monday
+  const todayDow = today.getDay();
   const monday = new Date(today);
   monday.setDate(today.getDate() - (todayDow === 0 ? 6 : todayDow - 1));
 
@@ -532,15 +536,28 @@ function renderWeek() {
       ? allItems.slice(0,4).map(f => `<span class="week-chip">${escH(f)}</span>`).join('') + (allItems.length > 4 ? `<span class="week-chip">+${allItems.length-4} more</span>` : '')
       : `<span class="week-chip empty">Nothing packed</span>`;
 
+    // Calculate packing account status count (Max 3)
+    const dc = S.daycareSnacks[wl] || { morning: '', afternoon: '' };
+    let score = 0;
+    if ((meals.morning && meals.morning.length > 0) || (dc.morning && dc.morning.trim())) score++;
+    if (meals.lunch && meals.lunch.length > 0) score++;
+    if ((meals.afternoon && meals.afternoon.length > 0) || (dc.afternoon && dc.afternoon.trim())) score++;
+
+    const badgeClass = score === 3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
+    const badgeContent = score === 3 
+      ? `<i class="ti ti-circle-check" style="font-size:13px"></i> 3/3` 
+      : `${score}/3`;
+
     html += `<div class="week-day-row${isToday?' today':''}" onclick="S.offset=${dayOffset};save();switchTab('today');renderToday()">
       <div class="week-day-left">
         <span class="week-day-name">${DAYS[d.getDay()].slice(0,3)}</span>
         <span class="week-day-num">${d.getDate()}</span>
       </div>
       <div class="week-day-content">
-        <span class="week-badge-small">Wk ${wl}</span>
+        <span class="week-badge-small">${wl}</span>
         ${itemChips}
       </div>
+      <div class="${badgeClass}">${badgeContent}</div>
     </div>`;
   }
   document.getElementById('week-grid').innerHTML = html;
