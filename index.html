@@ -149,7 +149,7 @@
   .week-done-badge.incomplete { background: var(--surface2); color: var(--text-secondary); border: 0.5px solid var(--border-med); }
 
   /* ── SETTINGS VIEW ── */
-  .settings-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .settings-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 16px 60px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
   .settings-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
   .settings-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); padding: 14px 16px 10px; }
   .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 0.5px solid var(--border); gap: 12px; }
@@ -169,7 +169,7 @@
   .favs-manage { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
   .favs-chips-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
   .fav-manage-chip { font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 20px; background: var(--gray-50); color: var(--gray-600); display: flex; align-items: center; gap: 5px; }
-  .fav-manage-chip button { background: none; border: none; cursor: pointer; color: var(--text-hint); font-size: 15px; padding: 0; line-height: 1; display: flex; align-items: center; }
+  .fav-manage-chip button { background: none; border: none; pointer: cursor; color: var(--text-hint); font-size: 15px; padding: 0; line-height: 1; display: flex; align-items: center; }
   .fav-manage-chip button:hover { color: var(--text-primary); }
   .fav-add-row { display: flex; gap: 8px; }
   .fav-add-input { flex: 1; font-size: 13px; font-family: var(--font); border: 0.5px solid var(--border-med); border-radius: 8px; padding: 8px 10px; background: var(--surface2); color: var(--text-primary); }
@@ -352,16 +352,10 @@ const DEFAULT_STATE = {
   }
 };
 
-let S = JSON.parse(localStorage.getItem('daycareApp_v2') || 'null') || JSON.parse(JSON.stringify(DEFAULT_STATE));
+// Storage structure bumped cleanly to v3 to resolve local cache collision locks
+let S = JSON.parse(localStorage.getItem('daycareApp_v3') || 'null') || JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-// Run automated self-repair migration if checking old single-string menu properties
-if (!S.daycareSnacks || !S.daycareSnacks.A || typeof S.daycareSnacks.A.morning === 'string') {
-  S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
-}
-if (!S.favorites) S.favorites = [...DEFAULT_STATE.favorites];
-if (!S.meals) S.meals = {};
-
-function save() { localStorage.setItem('daycareApp_v2', JSON.stringify(S)); }
+function save() { localStorage.setItem('daycareApp_v3', JSON.stringify(S)); }
 function saveSetting(key, val) { S[key] = val; save(); }
 function saveDaycareSnack(week, slot, day, val) { 
   if (!S.daycareSnacks[week][slot]) S.daycareSnacks[week][slot] = {};
@@ -452,8 +446,8 @@ function addFromTyped() {
   if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
   if (!S.favorites.includes(val)) S.favorites.unshift(val);
   inp.value = '';
-  inp.focus(); 
-  save(); renderSheetFavs(); renderToday();
+  save();
+  closeSheet(); // Dynamically dismiss the panel layout and draw workspace updates
 }
 function removeItem(type, food) {
   const key = dateKey(S.offset);
@@ -652,7 +646,6 @@ function renderWeek() {
 function renderSettings() {
   document.getElementById('week-a-start').value = S.weekAStart;
 
-  // Build the day rows dynamically for settings view
   ['A', 'B'].forEach(wk => {
     const daysHtml = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => {
       const morningVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].morning) ? (S.daycareSnacks[wk].morning[day] || '') : '';
