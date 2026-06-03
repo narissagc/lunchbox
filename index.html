@@ -58,7 +58,6 @@
   .view { display: none; width: 100%; overflow: hidden; }
   .view.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
-  /* ── TOP NAV — safe area inset pushes content below status bar ── */
   .top-bar {
     background: var(--surface);
     padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
@@ -78,6 +77,18 @@
   .today-btn { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--amber-50); color: var(--amber-800); border: none; cursor: pointer; font-family: var(--font); transition: background 0.12s; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
   .today-btn:hover { background: var(--amber-600); color: #fff; }
 
+  /* ── COMPLETION TRACKER BANNER ── */
+  .progress-banner { background: var(--surface); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); gap: 12px; flex-shrink: 0; }
+  .progress-text { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-secondary); }
+  .progress-bar-wrap { flex: 1; max-width: 140px; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--teal-600); border-radius: 3px; transition: width 0.2s ease; }
+
+  /* ── NO SCHOOL CONTROLS ── */
+  .day-controls-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 14px; gap: 10px; }
+  .no-school-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; user-select: none; }
+  .no-school-label input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--purple-600); cursor: pointer; }
+  .no-school-badge { font-size: 10px; font-weight: 700; background: var(--amber-50); color: var(--amber-800); padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+
   .meals-scroll, .week-scroll, .settings-scroll { flex: 1; overflow-y: auto; padding: 16px 16px 120px; -webkit-overflow-scrolling: touch; min-height: 0; }
 
   .meal-card, .week-grid, .settings-section { margin-bottom: 16px; }
@@ -96,10 +107,10 @@
   .card-divider { height: 0.5px; background: var(--border); margin: 0 16px 12px; }
   .section-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
 
-  .daycare-offered { background: var(--purple-50); border-radius: var(--radius-sm); padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; transition: background-color 0.15s, border 0.15s; }
-  .daycare-offered-text { font-size: 13px; font-weight: 600; color: var(--purple-800); flex: 1; transition: opacity 0.15s; }
-  .daycare-week-tag { font-size: 10px; font-weight: 700; color: var(--purple-800); opacity: 0.7; flex-shrink: 0; }
-  .dc-toggle-btn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: none; cursor: pointer; font-family: var(--font); white-space: nowrap; transition: all 0.12s; }
+  /* ── WORD-REDUCED DAYCARE OFFERS ── */
+  .daycare-offered { background: var(--purple-50); border-radius: var(--radius-sm); padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: background-color 0.15s, border 0.15s; }
+  .daycare-offered-text { font-size: 13px; font-weight: 600; color: var(--purple-800); flex: 1; }
+  .dc-toggle-btn { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: none; cursor: pointer; font-family: var(--font); white-space: nowrap; transition: all 0.12s; }
   .dc-toggle-btn.active { background: #FFFFFF; color: var(--purple-800); box-shadow: var(--shadow); }
   .dc-toggle-btn.supplement { background: var(--amber-50); color: var(--amber-800); }
 
@@ -117,30 +128,38 @@
   .weekend-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
   .weekend-sub { font-size: 14px; color: var(--text-secondary); }
 
-  /* ── BOTTOM TAB BAR — safe area inset for home indicator ── */
   .tab-bar { background: var(--surface); border-top: 0.5px solid var(--border); display: flex; padding: 8px 0; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px); flex-shrink: 0; z-index: 30; }
   .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; padding: 4px 0; }
   .tab-item i { font-size: 22px; color: var(--text-hint); transition: color 0.15s; }
   .tab-item span { font-size: 10px; font-weight: 700; color: var(--text-hint); transition: color 0.15s; }
   .tab-item.active i, .tab-item.active span { color: var(--purple-600); }
 
-  .week-grid { display: flex; flex-direction: column; gap: 2px; }
-  .week-day-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.1s; }
+  /* ── WEEK VIEW OPTION A: STRUCTURAL SLOTS ── */
+  .week-grid { display: flex; flex-direction: column; gap: 6px; }
+  .week-day-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.1s; }
   .week-day-row:hover { background: var(--surface2); }
   .week-day-row.today { border-color: var(--purple-600); border-width: 1.5px; }
-  .week-day-left { display: flex; flex-direction: column; align-items: center; min-width: 34px; }
+  .week-day-left { display: flex; flex-direction: column; align-items: center; min-width: 36px; padding-top: 2px; }
   .week-day-name { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-hint); }
   .week-day-num { font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1.1; }
   .week-day-row.today .week-day-num { color: var(--purple-600); }
-  .week-day-content { flex: 1; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding-top: 3px; }
-  .week-chip { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  
+  .week-day-content { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .week-slot-line { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 18px; }
+  .week-slot-lbl { font-size: 10px; font-weight: 700; color: var(--text-hint); width: 22px; flex-shrink: 0; text-align: right; }
+  .week-slot-chips { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0; }
+  .week-slot-empty { font-size: 11px; color: var(--text-hint); opacity: 0.4; padding-left: 2px; }
+  
+  .week-chip { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
   .week-chip.morning { background: var(--amber-50); color: var(--amber-800); }
   .week-chip.lunch { background: var(--teal-50); color: var(--teal-800); }
   .week-chip.afternoon { background: var(--blue-50); color: var(--blue-800); }
-  .week-chip.empty { background: var(--gray-50); color: var(--gray-600); font-style: italic; font-weight: 500; }
-  .week-chip.more { background: var(--surface2); color: var(--text-secondary); font-weight: 500; }
-  .week-badge-small { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--purple-50); color: var(--purple-800); }
-  .week-done-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 3px; }
+  
+  .week-meta-wrap { display: flex; align-items: center; gap: 4px; margin-top: 3px; width: 100%; }
+  .week-badge-small { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: var(--purple-50); color: var(--purple-800); text-transform: uppercase; }
+  .week-ns-tag { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: var(--gray-50); color: var(--gray-600); text-transform: uppercase; }
+  
+  .week-done-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 3px; align-self: center; }
   .week-done-badge.complete { background: var(--teal-50); color: var(--teal-800); }
   .week-done-badge.incomplete { background: var(--surface2); color: var(--text-secondary); border: 0.5px solid var(--border-med); }
 
@@ -187,449 +206,4 @@
   .sheet-input-row { display: flex; gap: 8px; margin-bottom: 20px; }
   .sheet-input { flex: 1; height: 42px; border: 0.5px solid var(--border-med); border-radius: 10px; padding: 0 12px; font-size: 14px; font-family: var(--font); background: var(--surface2); color: var(--text-primary); }
   .sheet-input:focus { outline: none; border-color: var(--purple-600); }
-  .sheet-add-btn { height: 42px; padding: 0 18px; background: var(--teal-50); color: var(--teal-800); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: var(--font); cursor: pointer; white-space: nowrap; }
-  .favs-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); margin-bottom: 10px; }
-  .favs-chips { display: flex; flex-wrap: wrap; gap: 7px; }
-  .fav-chip { font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 20px; border: 0.5px solid var(--border-med); background: var(--surface2); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.12s; }
-  .fav-chip.selected { background: var(--teal-50); color: var(--teal-800); border-color: transparent; }
-  .fav-chip:hover:not(.selected) { background: var(--surface2); border-color: var(--text-hint); }
-</style>
-</head>
-<body>
-<div class="phone-wrap">
-
-  <div class="view active" id="view-today">
-    <div class="top-bar">
-      <div class="app-title">
-<span style="display:flex;align-items:center;gap:6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Lunchbox</span>
-       <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button><button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
-      </div>
-      <div class="day-nav">
-        <button class="nav-arrow" onclick="changeDay(-1)" aria-label="Previous day"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
-        <div class="day-center">
-          <div class="day-name" id="day-name">Monday</div>
-          <div class="day-meta"><span id="day-date-label">Jun 2</span></div>
-        </div>
-        <button class="nav-arrow" onclick="changeDay(1)" aria-label="Next day"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
-      </div>
-    </div>
-    <div class="meals-scroll" id="meals-container"></div>
-  </div>
-
-  <div class="view" id="view-week">
-    <div class="top-bar" style="display:flex;align-items:center;gap:12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);">
-      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back" style="width:34px;height:34px;font-size:16px;flex-shrink:0;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
-      <div class="app-title" style="margin-bottom:0;flex:1;"><i class="ti ti-calendar-week" style="font-size:14px" aria-hidden="true"></i> This week</div>
-    </div>
-    <div class="week-scroll"><div class="week-grid" id="week-grid"></div></div>
-  </div>
-
-  <div class="view" id="view-settings">
-    <div class="top-bar" style="display:flex;align-items:center;gap:12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);">
-      <button class="nav-arrow" onclick="switchTab('today')" aria-label="Back" style="width:34px;height:34px;font-size:16px;flex-shrink:0;"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
-      <div class="app-title" style="margin-bottom:0;flex:1;"><i class="ti ti-settings" style="font-size:14px" aria-hidden="true"></i> Settings</div>
-    </div>
-    <div class="settings-scroll">
-
-      <div class="settings-section">
-        <div class="settings-section-title">Schedule</div>
-        <div class="settings-row">
-          <label for="week-a-start">Week A starts on</label>
-          <input type="date" id="week-a-start" onchange="saveSetting('weekAStart', this.value); renderAll()" />
-        </div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">Daycare Snacks — Week A</div>
-        <div id="settings-dc-A-area"></div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">Daycare Snacks — Week B</div>
-        <div id="settings-dc-B-area"></div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">Favorites</div>
-        <div class="favs-manage" id="settings-favs-area"></div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title">Backup &amp; restore</div>
-        <div class="backup-area">
-          <button class="backup-btn export" onclick="exportBackup()">
-            <i class="ti ti-download" aria-hidden="true"></i>
-            <span><span style="display:block">Export backup</span><span class="btn-sub">Downloads a .json file — save to Files or iCloud</span></span>
-          </button>
-          <button class="backup-btn import" onclick="document.getElementById('import-file').click()">
-            <i class="ti ti-upload" aria-hidden="true"></i>
-            <span><span style="display:block">Import backup</span><span class="btn-sub">Restore from a previously exported file</span></span>
-          </button>
-          <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importBackup(event)" />
-          <div class="restore-toast" id="restore-toast"></div>
-          <button class="backup-btn danger" onclick="confirmReset()">
-            <i class="ti ti-trash" aria-hidden="true"></i>
-            <span><span style="display:block">Reset all data</span><span class="btn-sub">Clears everything — export first!</span></span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="tab-bar">
-    <button class="tab-item active" id="tab-today" onclick="switchTab('today')">
-      <i class="ti ti-calendar-event" aria-hidden="true"></i><span>Today</span>
-    </button>
-    <button class="tab-item" id="tab-week" onclick="switchTab('week')">
-      <i class="ti ti-layout-grid" aria-hidden="true"></i><span>Week</span>
-    </button>
-    <button class="tab-item" id="tab-settings" onclick="switchTab('settings')">
-      <i class="ti ti-settings" aria-hidden="true"></i><span>Settings</span>
-    </button>
-  </div>
-
-</div>
-
-<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()">
-  <div class="sheet" id="sheet" onclick="event.stopPropagation()">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title" id="sheet-title">Add to lunch</div>
-    <div class="sheet-input-row">
-      <input class="sheet-input" id="sheet-input" placeholder="Type a food item…" onkeydown="if(event.key==='Enter')addFromTyped()" />
-      <button class="sheet-add-btn" onclick="addFromTyped()">Add</button>
-    </div>
-    <div class="favs-section-label">Favorites &amp; recent</div>
-    <div class="favs-chips" id="sheet-favs"></div>
-  </div>
-</div>
-
-<script>
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-const DEFAULT_STATE = {
-  weekAStart: '2026-06-01',
-  offset: 0,
-  meals: {},
-  favorites: [
-    'Apple slices','Banana','Blueberries','Grapes','Strawberries','Orange slices','Watermelon',
-    'Cheese cubes','String cheese','Yogurt pouch','Hummus & crackers',
-    'PB&J sandwich','Turkey wrap','Turkey & cheese sandwich','Pasta salad','Mac & cheese',
-    'Baby carrots','Cucumber slices','Veggie straws',
-    'Goldfish crackers','Pretzels','Rice cakes','Mini muffin','Granola bar'
-  ],
-  daycareSnacks: {
-    A: {
-      morning:   { Monday:'Milk & Cheerios', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
-      afternoon: { Monday:'Fruit Crisps', Tuesday:'Pretzels', Wednesday:'Mini Sweet Peppers', Thursday:'Cheese Sticks & Cucumbers', Friday:'Celery & Sunbutter', Saturday:'', Sunday:'' }
-    },
-    B: {
-      morning:   { Monday:'Milk & Chex', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
-      afternoon: { Monday:'Pomegranate Seeds', Tuesday:'Apple Slices & Sunbutter', Wednesday:'Carrot Sticks & Raisins', Thursday:'Bananas', Friday:'', Saturday:'', Sunday:'' }
-    }
-  }
-};
-
-let S;
-
-function initStorage() {
-  try { S = JSON.parse(localStorage.getItem('lunchbox_v8')); } catch(e) { S = null; }
-  const valid = S && S.daycareSnacks && S.daycareSnacks.A && typeof S.daycareSnacks.A.morning === 'object' && S.favorites && S.meals;
-  if (!valid) { S = JSON.parse(JSON.stringify(DEFAULT_STATE)); save(); }
-}
-
-function save() { try { localStorage.setItem('lunchbox_v8', JSON.stringify(S)); } catch(e) {} }
-function saveSetting(key, val) { S[key] = val; save(); }
-function saveDaycareSnack(week, slot, day, val) {
-  if (!S.daycareSnacks[week]) S.daycareSnacks[week] = { morning:{}, afternoon:{} };
-  if (!S.daycareSnacks[week][slot]) S.daycareSnacks[week][slot] = {};
-  S.daycareSnacks[week][slot][day] = val; save();
-}
-
-function dateForOffset(o) { const d = new Date(); d.setDate(d.getDate() + o); return d; }
-function dateKey(o) {
-  const d = dateForOffset(o);
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function weekLetter(o) {
-  const d = dateForOffset(o);
-  const start = new Date(S.weekAStart);
-  const weeks = Math.floor((d - start) / (7*86400000));
-  return ((weeks%2)+2)%2 === 0 ? 'A' : 'B';
-}
-function getMeals(key) {
-  if (!S.meals[key]) S.meals[key] = { morning:[], lunch:[], afternoon:[], dcAccepted:{} };
-  const m = S.meals[key];
-  if (!m.dcAccepted) m.dcAccepted = {};
-  if (!m.morning) m.morning = [];
-  if (!m.lunch) m.lunch = [];
-  if (!m.afternoon) m.afternoon = [];
-  return m;
-}
-function isWeekend(o) { const d = dateForOffset(o).getDay(); return d===0||d===6; }
-function hasTwoItems(t) { return t && (t.includes('&') || /\band\b/i.test(t)); }
-function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function switchTab(name) {
-  ['today','week','settings'].forEach(n => {
-    const v = document.getElementById(`view-${n}`);
-    const t = document.getElementById(`tab-${n}`);
-    if (v) v.classList.toggle('active', n===name);
-    if (t) t.classList.toggle('active', n===name);
-  });
-  if (name==='week') renderWeek();
-  if (name==='settings') renderSettings();
-}
-
-function changeDay(dir) { S.offset += dir; save(); renderToday(); }
-function jumpToToday() { S.offset = 0; save(); renderToday(); }
-
-let sheetMealType = null;
-
-function openSheet(type, label) {
-  sheetMealType = type;
-  document.getElementById('sheet-title').textContent = `Add to ${label}`;
-  document.getElementById('sheet-input').value = '';
-  renderSheetFavs();
-  document.getElementById('sheet-overlay').classList.add('open');
-  document.getElementById('sheet').classList.add('open');
-  setTimeout(() => document.getElementById('sheet-input').focus(), 350);
-}
-function closeSheet() {
-  if (document.activeElement) document.activeElement.blur();
-  document.getElementById('sheet-overlay').classList.remove('open');
-  document.getElementById('sheet').classList.remove('open');
-  renderToday();
-}
-function renderSheetFavs() {
-  const key = dateKey(S.offset);
-  const existing = getMeals(key)[sheetMealType] || [];
-  document.getElementById('sheet-favs').innerHTML = S.favorites.map((f,i) => {
-    const sel = existing.includes(f);
-    return `<button class="fav-chip${sel?' selected':''}" onclick="toggleFav(${i})">${sel?'<i class="ti ti-check" style="font-size:13px"></i>':''}${escH(f)}</button>`;
-  }).join('');
-}
-function toggleFav(i) {
-  const food = S.favorites[i];
-  const key = dateKey(S.offset);
-  const meals = getMeals(key);
-  const idx = meals[sheetMealType].indexOf(food);
-  if (idx>-1) meals[sheetMealType].splice(idx,1); else meals[sheetMealType].push(food);
-  save(); renderSheetFavs(); renderToday();
-}
-function addFromTyped() {
-  const inp = document.getElementById('sheet-input');
-  const val = inp ? inp.value.trim() : '';
-  if (val) {
-    const key = dateKey(S.offset);
-    const meals = getMeals(key);
-    if (!meals[sheetMealType].includes(val)) meals[sheetMealType].push(val);
-    if (!S.favorites.includes(val)) S.favorites.unshift(val);
-    save();
-  }
-  closeSheet();
-}
-function removeItem(type, idx) {
-  const key = dateKey(S.offset);
-  const meals = getMeals(key);
-  if (meals[type]) { meals[type].splice(idx,1); save(); renderToday(); }
-}
-function toggleDcAccept(slot) {
-  const key = dateKey(S.offset);
-  const wl = weekLetter(S.offset);
-  const dayName = DAYS[dateForOffset(S.offset).getDay()];
-  const dc = S.daycareSnacks[wl];
-  const snackText = dc && dc[slot] ? (dc[slot][dayName]||'') : '';
-  const meals = getMeals(key);
-  const cur = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(snackText);
-  meals.dcAccepted[slot] = !cur;
-  save(); renderToday();
-}
-
-function renderToday() {
-  const d = dateForOffset(S.offset);
-  const wl = weekLetter(S.offset);
-  const key = dateKey(S.offset);
-  const dayName = DAYS[d.getDay()];
-  const el = (id) => document.getElementById(id);
-  if (el('day-name')) el('day-name').textContent = dayName;
-  if (el('day-date-label')) el('day-date-label').textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  const jb = el('today-jump-btn');
-  if (jb) jb.style.display = S.offset===0 ? 'none' : 'inline-block';
-  const container = el('meals-container');
-  if (!container) return;
-
-  if (isWeekend(S.offset)) {
-    container.innerHTML = `<div class="weekend-state"><div class="weekend-icon">🎉</div><div class="weekend-title">It's the weekend!</div><div class="weekend-sub">No daycare today.</div></div>`;
-    return;
-  }
-
-  const dc = S.daycareSnacks[wl] || { morning:{}, afternoon:{} };
-  const meals = getMeals(key);
-  const morningSnack   = dc.morning   ? (dc.morning[dayName]   || '') : '';
-  const afternoonSnack = dc.afternoon ? (dc.afternoon[dayName] || '') : '';
-
-  const mealDefs = [
-    { key:'morning',   label:'Morning snack',   icon:'<i class="ti ti-sun"></i>',    iconClass:'morning',   time:'9:00 AM',  dcSnack:morningSnack },
-    { key:'lunch',     label:'Lunch',            icon:'<i class="ti ti-salad"></i>',  iconClass:'lunch',     time:'12:00 PM', dcSnack:null },
-    { key:'afternoon', label:'Afternoon snack',  icon:'<i class="ti ti-moon"></i>',   iconClass:'afternoon', time:'3:00 PM',  dcSnack:afternoonSnack }
-  ];
-
-  container.innerHTML = mealDefs.map(m => {
-    const items = meals[m.key] || [];
-    const isAccepted = meals.dcAccepted[m.key] !== undefined ? meals.dcAccepted[m.key] : hasTwoItems(m.dcSnack);
-    const dcHtml = m.dcSnack ? `
-      <div class="card-section">
-        <div class="section-eyebrow"><i class="ti ti-building-community" style="font-size:12px"></i> Daycare is offering</div>
-        <div class="daycare-offered" style="${isAccepted?'':'background:var(--surface2);border:0.5px dashed var(--border-med);'}">
-          <span class="daycare-offered-text">${escH(m.dcSnack)}</span>
-          <button class="dc-toggle-btn ${isAccepted?'active':'supplement'}" onclick="toggleDcAccept('${m.key}')">
-            ${isAccepted?'✓ Covered':'⚠️ Supplementing'}
-          </button>
-        </div>
-      </div>
-      <div class="card-divider"></div>` : '';
-    const chipsHtml = items.length
-      ? items.map((f,i) => `<span class="chip packed">${escH(f)}<button class="chip-remove" onclick="removeItem('${m.key}',${i})"><i class="ti ti-x" style="font-size:13px"></i></button></span>`).join('')
-      : `<span class="nothing-yet">Nothing packed yet</span>`;
-    return `<div class="meal-card">
-      <div class="meal-card-head">
-        <div class="meal-title-row"><div class="meal-icon ${m.iconClass}">${m.icon}</div><span class="meal-label">${m.label}</span></div>
-        <span class="meal-time-tag">${m.time}</span>
-      </div>
-      ${dcHtml}
-      <div class="card-section">
-        <div class="section-eyebrow"><i class="ti ti-backpack" style="font-size:12px"></i> ${m.dcSnack?'Also packing':'Packing'}</div>
-        <div class="chips-row">${chipsHtml}<button class="chip-add" onclick="openSheet('${m.key}','${m.label}')"><i class="ti ti-plus" style="font-size:13px"></i> add</button></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function renderWeek() {
-  const today = new Date();
-  const dow = today.getDay();
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - (dow===0?6:dow-1));
-  let html = '';
-  for (let i=0; i<5; i++) {
-    const d = new Date(monday); d.setDate(monday.getDate()+i);
-    const dayOffset = Math.round((d-today)/86400000);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const start = new Date(S.weekAStart);
-    const wl = ((Math.floor((d-start)/(7*86400000))%2)+2)%2===0 ? 'A' : 'B';
-    const meals = S.meals[key] || { morning:[],lunch:[],afternoon:[],dcAccepted:{} };
-    const dayName = DAYS[d.getDay()];
-    const isToday = dayOffset===0;
-    const slots = [{key:'morning',css:'morning'},{key:'lunch',css:'lunch'},{key:'afternoon',css:'afternoon'}];
-    let chips='', total=0, rendered=0;
-    slots.forEach(s => total += (meals[s.key]||[]).length);
-    if (!total) {
-      chips = `<span class="week-chip empty">Nothing packed</span>`;
-    } else {
-      slots.forEach(s => (meals[s.key]||[]).forEach(f => {
-        if (rendered<5) { chips+=`<span class="week-chip ${s.css}">${escH(f)}</span>`; rendered++; }
-      }));
-      if (total>5) chips+=`<span class="week-chip more">+${total-5} more</span>`;
-    }
-    const dc = S.daycareSnacks[wl]||{morning:{},afternoon:{}};
-    const dcA = meals.dcAccepted||{};
-    const mSnack=(dc.morning&&dc.morning[dayName])||'';
-    const aSnack=(dc.afternoon&&dc.afternoon[dayName])||'';
-    const mOk = dcA.morning!==undefined ? dcA.morning : hasTwoItems(mSnack);
-    const aOk = dcA.afternoon!==undefined ? dcA.afternoon : hasTwoItems(aSnack);
-    let score=0;
-    if ((meals.morning&&meals.morning.length)||(mOk&&mSnack.trim())) score++;
-    if (meals.lunch&&meals.lunch.length) score++;
-    if ((meals.afternoon&&meals.afternoon.length)||(aOk&&aSnack.trim())) score++;
-    const bc = score===3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
-    const bl = score===3 ? '<i class="ti ti-circle-check" style="font-size:13px"></i> 3/3' : `${score}/3`;
-    html += `<div class="week-day-row${isToday?' today':''}" onclick="S.offset=${dayOffset};save();switchTab('today');renderToday()">
-      <div class="week-day-left"><span class="week-day-name">${dayName.slice(0,3)}</span><span class="week-day-num">${d.getDate()}</span></div>
-      <div class="week-day-content"><span class="week-badge-small">${wl}</span>${chips}</div>
-      <div class="${bc}">${bl}</div>
-    </div>`;
-  }
-  const g=document.getElementById('week-grid'); if(g) g.innerHTML=html;
-}
-
-function renderSettings() {
-  const si = document.getElementById('week-a-start');
-  if (si) si.value = S.weekAStart||'2026-06-01';
-  ['A','B'].forEach(wk => {
-    const area = document.getElementById(`settings-dc-${wk}-area`);
-    if (!area) return;
-    area.innerHTML = ['Monday','Tuesday','Wednesday','Thursday','Friday'].map((day,idx) => {
-      const mVal = (S.daycareSnacks[wk]&&S.daycareSnacks[wk].morning) ? (S.daycareSnacks[wk].morning[day]||'') : '';
-      const aVal = (S.daycareSnacks[wk]&&S.daycareSnacks[wk].afternoon) ? (S.daycareSnacks[wk].afternoon[day]||'') : '';
-      return `<div class="daycare-input-block" style="${idx===0?'border-top:none':''}">
-        <div class="daycare-input-label" style="font-weight:700">${day}</div>
-        <div style="display:flex;gap:8px;">
-          <input class="settings-text-input" style="margin-top:0;flex:1;" placeholder="AM Snack" value="${escH(mVal)}" oninput="saveDaycareSnack('${wk}','morning','${day}',this.value)" />
-          <input class="settings-text-input" style="margin-top:0;flex:1;" placeholder="PM Snack" value="${escH(aVal)}" oninput="saveDaycareSnack('${wk}','afternoon','${day}',this.value)" />
-        </div>
-      </div>`;
-    }).join('');
-  });
-  const area = document.getElementById('settings-favs-area');
-  if (area) {
-    const chips = S.favorites.map((f,i) =>
-      `<span class="fav-manage-chip">${escH(f)}<button onclick="removeFav(${i})"><i class="ti ti-x" style="font-size:13px"></i></button></span>`
-    ).join('');
-    area.innerHTML = `<div class="favs-chips-wrap">${chips}</div>
-      <div class="fav-add-row" style="margin-top:10px">
-        <input class="fav-add-input" id="new-fav-input" placeholder="Add a favorite food…" onkeydown="if(event.key==='Enter')addFav()" />
-        <button class="fav-add-btn" onclick="addFav()">Save</button>
-      </div>`;
-  }
-}
-
-function removeFav(i) { S.favorites.splice(i,1); save(); renderSettings(); }
-function addFav() {
-  const inp=document.getElementById('new-fav-input'); if(!inp) return;
-  const val=inp.value.trim();
-  if(!val||S.favorites.includes(val)) return;
-  S.favorites.unshift(val); inp.value=''; save(); renderSettings();
-  const ni=document.getElementById('new-fav-input'); if(ni) ni.focus();
-}
-
-function exportBackup() {
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const now=new Date();
-  const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  const a=document.createElement('a'); a.href=url; a.download=`lunchbox-backup-${stamp}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-function importBackup(event) {
-  const file=event.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e => {
-    try {
-      const parsed=JSON.parse(e.target.result);
-      if(!parsed.daycareSnacks||!parsed.favorites) throw new Error();
-      S=parsed; save(); renderAll(); renderSettings(); showToast('Data restored successfully!','success');
-    } catch { showToast("Could not read that file.",'error'); }
-    event.target.value='';
-  };
-  reader.readAsText(file);
-}
-function showToast(msg,type) {
-  const t=document.getElementById('restore-toast'); if(!t) return;
-  t.textContent=msg; t.className=`restore-toast ${type}`; t.style.display='block';
-  setTimeout(()=>{ t.style.display='none'; },4000);
-}
-function confirmReset() {
-  if(confirm("Reset all data? Export a backup first!")) {
-    S=JSON.parse(JSON.stringify(DEFAULT_STATE)); save(); renderAll(); renderSettings();
-    showToast('All data reset.','success');
-  }
-}
-
-function renderAll() { renderToday(); }
-
-window.addEventListener('DOMContentLoaded', () => { initStorage(); renderAll(); });
-</script>
-</body>
-</html>
+  .sheet-add-btn { height: 42px; padding
