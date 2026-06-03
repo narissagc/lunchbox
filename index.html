@@ -54,8 +54,13 @@
 
   .phone-wrap { width: 100%; max-width: 430px; height: 100dvh; height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.3); }
 
+  @media (max-width: 480px) {
+    html, body { background: var(--bg); }
+    .phone-wrap { max-height: 100dvh; box-shadow: none; }
+  }
+
   /* VIEWS */
-  .view { display: none; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+  .view { display: none; flex-direction: column; flex: 1; min-height: 0; height: 100%; width: 100%; overflow: hidden; }
   .view.active { display: flex; }
 
   /* ── TOP NAV ── */
@@ -343,7 +348,7 @@ let S;
 
 function initStorage() {
   try {
-    S = JSON.parse(localStorage.getItem('lunchbox_v6_final_safe'));
+    S = JSON.parse(localStorage.getItem('lunchbox_v7_final_perfect'));
   } catch (e) {
     S = null;
   }
@@ -356,7 +361,7 @@ function initStorage() {
 
 function save() { 
   try {
-    localStorage.setItem('lunchbox_v6_final_safe', JSON.stringify(S)); 
+    localStorage.setItem('lunchbox_v7_final_perfect', JSON.stringify(S)); 
   } catch(e) {}
 }
 
@@ -386,6 +391,9 @@ function weekLetter(o) {
 function getMeals(key) {
   if (!S.meals[key]) S.meals[key] = { morning: [], lunch: [], afternoon: [], dcAccepted: {} };
   if (!S.meals[key].dcAccepted) S.meals[key].dcAccepted = {};
+  if (!S.meals[key].morning) S.meals[key].morning = [];
+  if (!S.meals[key].lunch) S.meals[key].lunch = [];
+  if (!S.meals[key].afternoon) S.meals[key].afternoon = [];
   return S.meals[key];
 }
 function isWeekend(o) { const d = dateForOffset(o).getDay(); return d === 0 || d === 6; }
@@ -395,7 +403,6 @@ function hasTwoItems(text) {
   return text.includes('&') || /\band\b/i.test(text);
 }
 
-// ── Tab switching ──
 function switchTab(name) {
   ['today','week','settings'].forEach(n => {
     const viewEl = document.getElementById(`view-${n}`);
@@ -407,12 +414,10 @@ function switchTab(name) {
   if (name === 'settings') renderSettings();
 }
 
-// ── Day navigation ──
 function changeDay(dir) {
   S.offset += dir; save(); renderToday();
 }
 
-// ── Sheet ──
 let sheetMealType = null;
 let sheetMealLabel = null;
 
@@ -483,10 +488,8 @@ function toggleDcAccept(slot) {
   save(); renderToday();
 }
 
-// ── Escape HTML ──
 function escH(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-// ── Render Today ──
 function jumpToToday() {
   S.offset = 0; save(); renderToday();
 }
@@ -571,7 +574,6 @@ function renderToday() {
   }).join('');
 }
 
-// ── Render Week ──
 function renderWeek() {
   const today = new Date();
   const todayDow = today.getDay();
@@ -661,7 +663,6 @@ function renderWeek() {
   if (weekGridEl) weekGridEl.innerHTML = html;
 }
 
-// ── Render Settings ──
 function renderSettings() {
   if (!S.weekAStart) S.weekAStart = '2026-06-01';
   const startInput = document.getElementById('week-a-start');
@@ -714,7 +715,6 @@ function addFav() {
   save(); renderSettings();
 }
 
-// ── Backup / Restore ──
 function exportBackup() {
   const data = JSON.stringify(S, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
