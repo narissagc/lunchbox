@@ -258,27 +258,13 @@
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">Daycare offered snacks — Week A</div>
-        <div class="daycare-input-block">
-          <div class="daycare-input-label"><i class="ti ti-sun" aria-hidden="true" style="font-size:13px"></i> Morning snack</div>
-          <input class="settings-text-input" id="dc-A-morning" placeholder="e.g. Goldfish crackers & apple juice" oninput="saveDaycareSnack('A','morning',this.value)" />
-        </div>
-        <div class="daycare-input-block" style="border-top:0.5px solid var(--border)">
-          <div class="daycare-input-label"><i class="ti ti-moon" aria-hidden="true" style="font-size:13px"></i> Afternoon snack</div>
-          <input class="settings-text-input" id="dc-A-afternoon" placeholder="e.g. Graham crackers & milk" oninput="saveDaycareSnack('A','afternoon',this.value)" />
-        </div>
+        <div class="settings-section-title">Daycare Snacks — Week A</div>
+        <div id="settings-dc-A-area"></div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">Daycare offered snacks — Week B</div>
-        <div class="daycare-input-block">
-          <div class="daycare-input-label"><i class="ti ti-sun" aria-hidden="true" style="font-size:13px"></i> Morning snack</div>
-          <input class="settings-text-input" id="dc-B-morning" placeholder="e.g. Cheerios & orange juice" oninput="saveDaycareSnack('B','morning',this.value)" />
-        </div>
-        <div class="daycare-input-block" style="border-top:0.5px solid var(--border)">
-          <div class="daycare-input-label"><i class="ti ti-moon" aria-hidden="true" style="font-size:13px"></i> Afternoon snack</div>
-          <input class="settings-text-input" id="dc-B-afternoon" placeholder="e.g. Animal crackers & water" oninput="saveDaycareSnack('B','afternoon',this.value)" />
-        </div>
+        <div class="settings-section-title">Daycare Snacks — Week B</div>
+        <div id="settings-dc-B-area"></div>
       </div>
 
       <div class="settings-section">
@@ -301,7 +287,7 @@
           <div class="restore-toast" id="restore-toast"></div>
           <button class="backup-btn danger" onclick="confirmReset()">
             <i class="ti ti-trash" aria-hidden="true"></i>
-            <span><span style="display:block">Reset all data</span><span class="btn-sub" style="color:inherit;opacity:0.6">Clears everything — export first!</span></span>
+            <span><span style="display:block">Reset all data</span><span class="btn-sub">Clears everything — export first!</span></span>
           </button>
         </div>
       </div>
@@ -344,7 +330,7 @@ const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Satur
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 const DEFAULT_STATE = {
-  weekAStart: '2025-09-01',
+  weekAStart: '2026-06-01',
   offset: 0,
   meals: {},
   favorites: [
@@ -355,22 +341,33 @@ const DEFAULT_STATE = {
     'Goldfish crackers','Pretzels','Rice cakes','Mini muffin','Granola bar'
   ],
   daycareSnacks: {
-    A: { morning: 'Goldfish crackers & apple juice', afternoon: 'Graham crackers & milk' },
-    B: { morning: 'Cheerios & orange juice', afternoon: 'Animal crackers & water' }
+    A: { 
+      morning: { Monday: 'Milk & Cheerios', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Fruit Crisps', Tuesday: 'Pretzels', Wednesday: 'Mini Sweet Peppers', Thursday: 'Cheese Sticks & Cucumbers', Friday: 'Celery & Sunbutter', Saturday: '', Sunday: '' }
+    },
+    B: { 
+      morning: { Monday: 'Milk & Chex', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Pomegranate Seeds', Tuesday: 'Apple Slices & Sunbutter', Wednesday: 'Carrot Sticks & Raisins', Thursday: 'Bananas', Friday: '', Saturday: '', Sunday: '' }
+    }
   }
 };
 
 let S = JSON.parse(localStorage.getItem('daycareApp_v2') || 'null') || JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-if (!S.daycareSnacks) S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
-if (!S.daycareSnacks.A) S.daycareSnacks.A = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.A));
-if (!S.daycareSnacks.B) S.daycareSnacks.B = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks.B));
+// Run automated self-repair migration if checking old single-string menu properties
+if (!S.daycareSnacks || !S.daycareSnacks.A || typeof S.daycareSnacks.A.morning === 'string') {
+  S.daycareSnacks = JSON.parse(JSON.stringify(DEFAULT_STATE.daycareSnacks));
+}
 if (!S.favorites) S.favorites = [...DEFAULT_STATE.favorites];
 if (!S.meals) S.meals = {};
 
 function save() { localStorage.setItem('daycareApp_v2', JSON.stringify(S)); }
 function saveSetting(key, val) { S[key] = val; save(); }
-function saveDaycareSnack(week, slot, val) { S.daycareSnacks[week][slot] = val; save(); }
+function saveDaycareSnack(week, slot, day, val) { 
+  if (!S.daycareSnacks[week][slot]) S.daycareSnacks[week][slot] = {};
+  S.daycareSnacks[week][slot][day] = val; 
+  save(); 
+}
 
 function dateForOffset(o) {
   const d = new Date(); d.setDate(d.getDate() + o); return d;
@@ -468,10 +465,13 @@ function removeItem(type, food) {
 function toggleDcAccept(slot) {
   const key = dateKey(S.offset);
   const wl = weekLetter(S.offset);
+  const d = dateForOffset(S.offset);
+  const dayName = DAYS[d.getDay()];
   const dc = S.daycareSnacks[wl];
+  const snackText = (dc && dc[slot]) ? (dc[slot][dayName] || '') : '';
   const meals = getMeals(key);
   
-  const currentVal = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(dc[slot]);
+  const currentVal = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(snackText);
   meals.dcAccepted[slot] = !currentVal;
   save(); renderToday();
 }
@@ -488,7 +488,9 @@ function renderToday() {
   const d = dateForOffset(S.offset);
   const wl = weekLetter(S.offset);
   const key = dateKey(S.offset);
-  document.getElementById('day-name').textContent = DAYS[d.getDay()];
+  const dayName = DAYS[d.getDay()];
+  
+  document.getElementById('day-name').textContent = dayName;
   document.getElementById('day-date-label').textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
   const jumpBtn = document.getElementById('today-jump-btn');
   if (jumpBtn) jumpBtn.style.display = S.offset === 0 ? 'none' : 'inline-block';
@@ -504,14 +506,17 @@ function renderToday() {
     return;
   }
 
-  const dc = S.daycareSnacks[wl];
+  const dc = S.daycareSnacks[wl] || { morning: {}, afternoon: {} };
   const meals = getMeals(key);
   const dcAccepted = meals.dcAccepted || {};
 
+  const currentMorningSnack = dc.morning[dayName] || '';
+  const currentAfternoonSnack = dc.afternoon[dayName] || '';
+
   const mealDefs = [
-    { key:'morning',   label:'Morning snack',   icon:'<i class="ti ti-sun" aria-hidden="true"></i>',    iconClass:'morning',   time:'9:00 AM',  dcSnack: dc.morning   },
+    { key:'morning',   label:'Morning snack',   icon:'<i class="ti ti-sun" aria-hidden="true"></i>',    iconClass:'morning',   time:'9:00 AM',  dcSnack: currentMorningSnack },
     { key:'lunch',     label:'Lunch',            icon:'<i class="ti ti-salad" aria-hidden="true"></i>',  iconClass:'lunch',     time:'12:00 PM', dcSnack: null         },
-    { key:'afternoon', label:'Afternoon snack',  icon:'<i class="ti ti-moon" aria-hidden="true"></i>',   iconClass:'afternoon', time:'3:00 PM',  dcSnack: dc.afternoon }
+    { key:'afternoon', label:'Afternoon snack',  icon:'<i class="ti ti-moon" aria-hidden="true"></i>',   iconClass:'afternoon', time:'3:00 PM',  dcSnack: currentAfternoonSnack }
   ];
 
   container.innerHTML = mealDefs.map(m => {
@@ -523,7 +528,7 @@ function renderToday() {
       <div class="card-section">
         <div class="section-eyebrow"><i class="ti ti-building-community" style="font-size:12px" aria-hidden="true"></i> Daycare is offering</div>
         <div class="daycare-offered" style="${isAccepted ? '' : 'background-color: var(--surface2); border: 0.5px dashed var(--border-med);'}">
-          <span class="daycare-offered-text">${escH(m.dcSnack || 'Not set in settings')}</span>
+          <span class="daycare-offered-text">${escH(m.dcSnack)}</span>
           <button class="dc-toggle-btn ${isAccepted ? 'active' : 'supplement'}" onclick="toggleDcAccept('${m.key}')">
             ${isAccepted ? '✓ Covered' : '⚠️ Supplementing'}
           </button>
@@ -576,6 +581,7 @@ function renderWeek() {
     const meals = S.meals[key] || { morning:[], lunch:[], afternoon:[], dcAccepted:{} };
     const dcAccepted = meals.dcAccepted || {};
     const isToday = dayOffset === 0;
+    const dayName = DAYS[d.getDay()];
 
     const mealSlots = [
       { key: 'morning', cssClass: 'morning' },
@@ -609,15 +615,18 @@ function renderWeek() {
       }
     }
 
-    const dc = S.daycareSnacks[wl] || { morning: '', afternoon: '' };
+    const dc = S.daycareSnacks[wl] || { morning: {}, afternoon: {} };
     let score = 0;
     
-    const morningAccepted = dcAccepted.morning !== undefined ? dcAccepted.morning : hasTwoItems(dc.morning);
-    const afternoonAccepted = dcAccepted.afternoon !== undefined ? dcAccepted.afternoon : hasTwoItems(dc.afternoon);
+    const morningSnackText = dc.morning[dayName] || '';
+    const afternoonSnackText = dc.afternoon[dayName] || '';
 
-    if ((meals.morning && meals.morning.length > 0) || (morningAccepted && dc.morning && dc.morning.trim())) score++;
+    const morningAccepted = dcAccepted.morning !== undefined ? dcAccepted.morning : hasTwoItems(morningSnackText);
+    const afternoonAccepted = dcAccepted.afternoon !== undefined ? dcAccepted.afternoon : hasTwoItems(afternoonSnackText);
+
+    if ((meals.morning && meals.morning.length > 0) || (morningAccepted && morningSnackText && morningSnackText.trim())) score++;
     if (meals.lunch && meals.lunch.length > 0) score++;
-    if ((meals.afternoon && meals.afternoon.length > 0) || (afternoonAccepted && dc.afternoon && dc.afternoon.trim())) score++;
+    if ((meals.afternoon && meals.afternoon.length > 0) || (afternoonAccepted && afternoonSnackText && afternoonSnackText.trim())) score++;
 
     const badgeClass = score === 3 ? 'week-done-badge complete' : 'week-done-badge incomplete';
     const badgeContent = score === 3 
@@ -626,7 +635,7 @@ function renderWeek() {
 
     html += `<div class="week-day-row${isToday?' today':''}" onclick="S.offset=${dayOffset};save();switchTab('today');renderToday()">
       <div class="week-day-left">
-        <span class="week-day-name">${DAYS[d.getDay()].slice(0,3)}</span>
+        <span class="week-day-name">${dayName.slice(0,3)}</span>
         <span class="week-day-num">${d.getDate()}</span>
       </div>
       <div class="week-day-content">
@@ -642,10 +651,26 @@ function renderWeek() {
 // ── Render Settings ──
 function renderSettings() {
   document.getElementById('week-a-start').value = S.weekAStart;
-  document.getElementById('dc-A-morning').value = S.daycareSnacks.A.morning;
-  document.getElementById('dc-A-afternoon').value = S.daycareSnacks.A.afternoon;
-  document.getElementById('dc-B-morning').value = S.daycareSnacks.B.morning;
-  document.getElementById('dc-B-afternoon').value = S.daycareSnacks.B.afternoon;
+
+  // Build the day rows dynamically for settings view
+  ['A', 'B'].forEach(wk => {
+    const daysHtml = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => {
+      const morningVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].morning) ? (S.daycareSnacks[wk].morning[day] || '') : '';
+      const afternoonVal = (S.daycareSnacks[wk] && S.daycareSnacks[wk].afternoon) ? (S.daycareSnacks[wk].afternoon[day] || '') : '';
+      const topBorder = idx === 0 ? 'border-top:none;' : 'border-top:0.5px solid var(--border);';
+      
+      return `
+        <div class="daycare-input-block" style="${topBorder}">
+          <div class="daycare-input-label" style="color: var(--text-secondary); font-weight:700; margin-bottom: 2px;">${day}</div>
+          <div style="display:flex; gap:8px;">
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="AM Snack" value="${escH(morningVal)}" oninput="saveDaycareSnack('${wk}','morning','${day}',this.value)" />
+            <input class="settings-text-input" style="margin-top:0; flex:1;" placeholder="PM Snack" value="${escH(afternoonVal)}" oninput="saveDaycareSnack('${wk}','afternoon','${day}',this.value)" />
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById(`settings-dc-${wk}-area`).innerHTML = daysHtml;
+  });
 
   const area = document.getElementById('settings-favs-area');
   const chips = S.favorites.map((f, idx) =>
