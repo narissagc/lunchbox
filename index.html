@@ -59,8 +59,8 @@
     .phone-wrap { max-height: 100dvh; box-shadow: none; }
   }
 
-  /* VIEWS */
-  .view { display: none; flex-direction: column; flex: 1; min-height: 0; height: 100%; width: 100%; overflow: hidden; }
+  /* VIEWS — FIX: Removed height: 100% to let flex layout properly size the container */
+  .view { display: none; flex-direction: column; flex: 1; min-height: 0; width: 100%; overflow: hidden; }
   .view.active { display: flex; }
 
   /* ── TOP NAV ── */
@@ -430,11 +430,16 @@ function openSheet(type, label) {
   document.getElementById('sheet').classList.add('open');
   setTimeout(() => document.getElementById('sheet-input').focus(), 350);
 }
+
+/* FIX: Explicitly blur input to collapse mobile keyboard safely during transition */
 function closeSheet() {
+  const inputEl = document.getElementById('sheet-input');
+  if (inputEl) inputEl.blur(); 
   document.getElementById('sheet-overlay').classList.remove('open');
   document.getElementById('sheet').classList.remove('open');
   renderToday();
 }
+
 function renderSheetFavs() {
   const key = dateKey(S.offset);
   const existing = getMeals(key)[sheetMealType] || [];
