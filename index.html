@@ -445,17 +445,18 @@ const DEFAULT_STATE = {
   ],
   daycareSnacks: {
     A: {
-      morning:   { Monday='Milk & Cheerios', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
-      afternoon: { Monday:'Fruit Crisps', Tuesday:'Pretzels', Wednesday:'Mini Sweet Peppers', Thursday:'Cheese Sticks & Cucumbers', Friday:'Celery & Sunbutter', Saturday:'', Sunday:'' }
+      morning:   { Monday: 'Milk & Cheerios', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Fruit Crisps', Tuesday: 'Pretzels', Wednesday: 'Mini Sweet Peppers', Thursday: 'Cheese Sticks & Cucumbers', Friday: 'Celery & Sunbutter', Saturday: '', Sunday: '' }
     },
     B: {
-      morning:   { Monday:'Milk & Chex', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
-      afternoon: { Monday:'Pomegranate Seeds', Tuesday:'Apple Slices & Sunbutter', Wednesday:'Carrot Sticks & Raisins', Thursday:'Bananas', Friday:'', Saturday:'', Sunday:'' }
+      morning:   { Monday: 'Milk & Chex', Tuesday: 'Milk', Wednesday: 'Milk', Thursday: 'Milk', Friday: 'Challah', Saturday: '', Sunday: '' },
+      afternoon: { Monday: 'Pomegranate Seeds', Tuesday: 'Apple Slices & Sunbutter', Wednesday: 'Carrot Sticks & Raisins', Thursday: 'Bananas', Friday: '', Saturday: '', Sunday: '' }
     }
   }
 };
 
 let S;
+let sheetMealType = 'lunch';
 let isEditingFavs = false;
 let statsWindow = 30;
 let sessionPacked = [];
@@ -472,9 +473,13 @@ function initStorage() {
 function save() { try { localStorage.setItem('lunchbox_v8', JSON.stringify(S)); } catch(e) {} }
 function saveSetting(key, val) { S[key] = val; save(); }
 function saveDaycareSnack(week, slot, day, val) {
-  if (!S.daycareSnacks[week]) S.daycareSnacks[week] = { morning:{}, afternoon:{} };
-  if (!S.daycareSnacks[week][slot]) S.daycareSnacks[week][slot] = {};
-  S.daycareSnacks[week][slot][day] = val; save();
+  if (!S.daycareSnacks) S.daycareSnacks = { A: {}, B: {} };
+  if (!S.daycareSnacks[week]) S.daycareSnacks[week] = {};
+  if (!S.daycareSnacks[week][slot] || typeof S.daycareSnacks[week][slot] !== 'object') {
+    S.daycareSnacks[week][slot] = {};
+  }
+  S.daycareSnacks[week][slot][day] = val; 
+  save();
 }
 
 function getFavCategory(item) {
@@ -589,7 +594,6 @@ function renderSheetFavs() {
     const items = groups[cat] || [];
     if (items.length === 0) return;
     
-    /* ── REQ 1: ALPHABETICAL SORT ALONG THE ADD PANELS ── */
     items.sort((a, b) => a.f.localeCompare(b.f));
     
     html += `<details open class="favs-cat-block">
@@ -668,7 +672,6 @@ function removeItem(type, idx) {
   }
 }
 
-/* ── REQ 3: RESTORED INTUITIVE INTERACTIVE TOGGLE EVALUATION BACKEND CLICK TRACKS ── */
 function toggleDcAccept(slot) {
   const key = dateKey(S.offset);
   const wl = weekLetter(S.offset);
@@ -677,7 +680,6 @@ function toggleDcAccept(slot) {
   const snackText = dc && dc[slot] ? (dc[slot][dayName]||'') : '';
   const meals = getMeals(key);
   
-  /* Upgraded dynamic condition fallback check tracks packed state along overrides */
   const cur = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : (meals[slot].length > 0 || hasTwoItems(snackText));
   meals.dcAccepted[slot] = !cur;
   save(); renderToday();
@@ -718,7 +720,6 @@ function renderToday() {
   const morningSnack   = dc.morning   ? (dc.morning[dayName]   || '') : '';
   const afternoonSnack = dc.afternoon ? (dc.afternoon[dayName] || '') : '';
 
-  /* ── UPGRADE: FALLBACK AUTO-EVALUATES TRUE IF ITEMS ARE DETECTED UPON FRESH IMPORT ── */
   const mOk = meals.dcAccepted.morning !== undefined ? meals.dcAccepted.morning : (meals.morning.length > 0 || hasTwoItems(morningSnack));
   const aOk = meals.dcAccepted.afternoon !== undefined ? meals.dcAccepted.afternoon : (meals.afternoon.length > 0 || hasTwoItems(afternoonSnack));
 
@@ -763,13 +764,9 @@ function renderToday() {
 
   container.innerHTML = controlsHtml + mealDefs.map(m => {
     const items = meals[m.key] || [];
-    
-    /* ── UPGRADE: CARD LEVEL AUTO-EVALUATES TRUE IF SLOT HAS PACKED ITEMS UPON FRESH IMPORT ── */
     const isAccepted = meals.dcAccepted[m.key] !== undefined ? meals.dcAccepted[m.key] : (items.length > 0 || hasTwoItems(m.dcSnack));
-    
     const showDaycareInfo = m.dcSnack && !meals.noSchool;
     
-    /* ── REQ 2: INVERTED HIGHLIGHT MECHANIC RUNS ONCE CRITERIA FAILS TO LOCK TARGETS UNFULFILLED ── */
     const dcHtml = showDaycareInfo ? `
       <div class="card-section">
         <div class="daycare-offered" style="${isAccepted ? 'background:var(--surface2); border:0.5px solid var(--border); color:var(--text-secondary);' : 'background:var(--purple-50); color:var(--purple-800);'}" onclick="toggleDcAccept('${m.key}')">
@@ -822,7 +819,6 @@ function renderWeek() {
     const mSnack=(dc.morning&&dc.morning[dayName])||'';
     const aSnack=(dc.afternoon&&dc.afternoon[dayName])||'';
     
-    /* ── UPGRADE: WEEK MATRIX AUTO-EVALUATES TRUE IF PACKED LOGS ARE DETECTED UPON FRESH IMPORT ── */
     const mOk = dcA.morning!==undefined ? dcA.morning : (meals.morning.length > 0 || hasTwoItems(mSnack));
     const aOk = dcA.afternoon!==undefined ? dcA.afternoon : (meals.afternoon.length > 0 || hasTwoItems(aSnack));
 
@@ -1009,7 +1005,6 @@ function renderSettings() {
       const items = groups[cat] || [];
       const isOther = cat === 'Other';
       
-      /* ── REQ 1: ALPHABETICAL SORT WITHIN MANAGEMENT VIEW SECTIONS ── */
       items.sort((a, b) => a.f.localeCompare(b.f));
       
       html += `<details class="favs-cat-block" ${isOther ? 'open' : ''}>
