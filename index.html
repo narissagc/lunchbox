@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Lunchbox</title>
 <link rel="manifest" href="./manifest.json" />
-<link rel="icon" type="image/png" href="./icon-192.svg" />
+<link rel="icon" type="image/svg+xml" href="./icon-192.svg" />
 <link rel="apple-touch-icon" href="./icon-192.svg" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -445,7 +445,7 @@ const DEFAULT_STATE = {
   ],
   daycareSnacks: {
     A: {
-      morning:   { Monday:'Milk & Cheerios', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
+      morning:   { Monday='Milk & Cheerios', Tuesday:'Milk', Wednesday:'Milk', Thursday:'Milk', Friday:'Challah', Saturday:'', Sunday:'' },
       afternoon: { Monday:'Fruit Crisps', Tuesday:'Pretzels', Wednesday:'Mini Sweet Peppers', Thursday:'Cheese Sticks & Cucumbers', Friday:'Celery & Sunbutter', Saturday:'', Sunday:'' }
     },
     B: {
@@ -523,7 +523,7 @@ function getMeals(key) {
   if (m.noSchool === undefined) m.noSchool = false;
   return m;
 }
-bin = (o) => { const d = dateForOffset(o).getDay(); return d===0||d===6; }
+function isWeekend(o) { const d = dateForOffset(o).getDay(); return d===0||d===6; }
 function hasTwoItems(t) { return t && (t.includes('&') || /\band\b/i.test(t)); }
 function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -574,7 +574,6 @@ function renderJustPacked() {
   `).join('');
 }
 
-/* ── CHANGE 1: ALPHABETICAL SORTING IMPLEMENTED FOR SHEETS ── */
 function renderSheetFavs() {
   const key = dateKey(S.offset);
   const existing = getMeals(key)[sheetMealType] || [];
@@ -590,7 +589,7 @@ function renderSheetFavs() {
     const items = groups[cat] || [];
     if (items.length === 0) return;
     
-    // Sort array elements alphabetically by their name string while keeping master pointer values intact
+    /* ── REQ 1: ALPHABETICAL SORT ALONG THE ADD PANELS ── */
     items.sort((a, b) => a.f.localeCompare(b.f));
     
     html += `<details open class="favs-cat-block">
@@ -669,7 +668,7 @@ function removeItem(type, idx) {
   }
 }
 
-/* ── CHANGE 3: INTERACTIVE HANDLER ENGAGEMENT VIA EXPLICIT CLICKS ── */
+/* ── REQ 3: RESTORED INTUITIVE INTERACTIVE TOGGLE EVALUATION BACKEND CLICK TRACKS ── */
 function toggleDcAccept(slot) {
   const key = dateKey(S.offset);
   const wl = weekLetter(S.offset);
@@ -677,7 +676,9 @@ function toggleDcAccept(slot) {
   const dc = S.daycareSnacks[wl];
   const snackText = dc && dc[slot] ? (dc[slot][dayName]||'') : '';
   const meals = getMeals(key);
-  const cur = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : hasTwoItems(snackText);
+  
+  /* Upgraded dynamic condition fallback check tracks packed state along overrides */
+  const cur = meals.dcAccepted[slot] !== undefined ? meals.dcAccepted[slot] : (meals[slot].length > 0 || hasTwoItems(snackText));
   meals.dcAccepted[slot] = !cur;
   save(); renderToday();
 }
@@ -690,7 +691,6 @@ function toggleNoSchool(checked) {
   renderToday();
 }
 
-/* ── CHANGE 2 & 3: INVERTED HIGHLIGHT & RESTORED CLICK INTERACTIVE ROW RUNTIME ── */
 function renderToday() {
   const d = dateForOffset(S.offset);
   const wl = weekLetter(S.offset);
@@ -718,8 +718,9 @@ function renderToday() {
   const morningSnack   = dc.morning   ? (dc.morning[dayName]   || '') : '';
   const afternoonSnack = dc.afternoon ? (dc.afternoon[dayName] || '') : '';
 
-  const mOk = meals.dcAccepted.morning !== undefined ? meals.dcAccepted.morning : hasTwoItems(morningSnack);
-  const aOk = meals.dcAccepted.afternoon !== undefined ? meals.dcAccepted.afternoon : hasTwoItems(afternoonSnack);
+  /* ── UPGRADE: FALLBACK AUTO-EVALUATES TRUE IF ITEMS ARE DETECTED UPON FRESH IMPORT ── */
+  const mOk = meals.dcAccepted.morning !== undefined ? meals.dcAccepted.morning : (meals.morning.length > 0 || hasTwoItems(morningSnack));
+  const aOk = meals.dcAccepted.afternoon !== undefined ? meals.dcAccepted.afternoon : (meals.afternoon.length > 0 || hasTwoItems(afternoonSnack));
 
   let score = 0;
   if (meals.noSchool) {
@@ -762,11 +763,13 @@ function renderToday() {
 
   container.innerHTML = controlsHtml + mealDefs.map(m => {
     const items = meals[m.key] || [];
-    const isAccepted = meals.dcAccepted[m.key] !== undefined ? meals.dcAccepted[m.key] : hasTwoItems(m.dcSnack);
+    
+    /* ── UPGRADE: CARD LEVEL AUTO-EVALUATES TRUE IF SLOT HAS PACKED ITEMS UPON FRESH IMPORT ── */
+    const isAccepted = meals.dcAccepted[m.key] !== undefined ? meals.dcAccepted[m.key] : (items.length > 0 || hasTwoItems(m.dcSnack));
     
     const showDaycareInfo = m.dcSnack && !meals.noSchool;
     
-    // Inverted highlighting setup: stays highlighted with var(--purple-50) when unfulfilled; quiet gray var(--surface2) when accepted.
+    /* ── REQ 2: INVERTED HIGHLIGHT MECHANIC RUNS ONCE CRITERIA FAILS TO LOCK TARGETS UNFULFILLED ── */
     const dcHtml = showDaycareInfo ? `
       <div class="card-section">
         <div class="daycare-offered" style="${isAccepted ? 'background:var(--surface2); border:0.5px solid var(--border); color:var(--text-secondary);' : 'background:var(--purple-50); color:var(--purple-800);'}" onclick="toggleDcAccept('${m.key}')">
@@ -818,8 +821,10 @@ function renderWeek() {
     const dcA = meals.dcAccepted||{};
     const mSnack=(dc.morning&&dc.morning[dayName])||'';
     const aSnack=(dc.afternoon&&dc.afternoon[dayName])||'';
-    const mOk = dcA.morning!==undefined ? dcA.morning : hasTwoItems(mSnack);
-    const aOk = dcA.afternoon!==undefined ? dcA.afternoon : hasTwoItems(aSnack);
+    
+    /* ── UPGRADE: WEEK MATRIX AUTO-EVALUATES TRUE IF PACKED LOGS ARE DETECTED UPON FRESH IMPORT ── */
+    const mOk = dcA.morning!==undefined ? dcA.morning : (meals.morning.length > 0 || hasTwoItems(mSnack));
+    const aOk = dcA.afternoon!==undefined ? dcA.afternoon : (meals.afternoon.length > 0 || hasTwoItems(aSnack));
 
     let score=0;
     if (meals.noSchool) {
@@ -972,7 +977,6 @@ function renderStats() {
   `;
 }
 
-/* ── CHANGE 1: ALPHABETICAL SORTING ALSO HANDLED INSIDE RE-RENDERS FOR SETTINGS ── */
 function renderSettings() {
   const si = document.getElementById('week-a-start');
   if (si) si.value = S.weekAStart||'2026-06-01';
@@ -1005,7 +1009,7 @@ function renderSettings() {
       const items = groups[cat] || [];
       const isOther = cat === 'Other';
       
-      // Sorted alphabetically inside Settings group tracking loops
+      /* ── REQ 1: ALPHABETICAL SORT WITHIN MANAGEMENT VIEW SECTIONS ── */
       items.sort((a, b) => a.f.localeCompare(b.f));
       
       html += `<details class="favs-cat-block" ${isOther ? 'open' : ''}>
@@ -1095,6 +1099,7 @@ function exportBackup() {
   const a=document.createElement('a'); a.href=url; a.download=`lunchbox-backup-${stamp}.json`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
+
 function importBackup(event) {
   const file=event.target.files[0]; if(!file) return;
   const reader=new FileReader();
