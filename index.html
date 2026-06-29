@@ -281,7 +281,7 @@
     <div class="top-bar">
       <div class="app-title">
         <span style="display:flex;align-items:center;gap:6px;"><i class="ti ti-backpack" style="font-size:14px" aria-hidden="true"></i> Lunchbox</span>
-        <button class="today-btn" id="today-jump-btn" onclick="jumpToToday()" style="display:none">Today</button>
+        <button class="today-btn" id="today-jump-btn" onclick="jumpToTomorrow()" style="display:none">Tomorrow</button>
       </div>
       <div class="day-nav">
         <button class="nav-arrow" onclick="changeDay(-1)" aria-label="Previous day"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
@@ -433,7 +433,7 @@ const INITIAL_CATEGORIES = {
 
 const DEFAULT_STATE = {
   weekAStart: '2026-06-01',
-  offset: 0,
+  offset: 1,
   meals: {},
   favCustomCategories: {},
   favorites: [
@@ -545,7 +545,7 @@ function switchTab(name) {
 }
 
 function changeDay(dir) { S.offset += dir; save(); renderToday(); }
-function jumpToToday() { S.offset = 0; save(); renderToday(); }
+function jumpToTomorrow() { S.offset = 1; save(); renderToday(); }
 
 function openSheet(type, label) {
   sheetMealType = type;
@@ -703,7 +703,7 @@ function renderToday() {
   if (el('day-name')) el('day-name').textContent = dayName;
   if (el('day-date-label')) el('day-date-label').textContent = `${MONTHS[d.getMonth()]} ${d.getDate()}`;
   const jb = el('today-jump-btn');
-  if (jb) jb.style.display = S.offset===0 ? 'none' : 'inline-block';
+  if (jb) jb.style.display = S.offset===1 ? 'none' : 'inline-block';
   
   const container = el('meals-container');
   const bannerContainer = el('progress-banner-container');
@@ -1125,7 +1125,42 @@ function confirmReset() {
 
 function renderAll() { renderToday(); }
 
-window.addEventListener('DOMContentLoaded', () => { initStorage(); renderAll(); });
+window.addEventListener('DOMContentLoaded', () => { 
+  initStorage(); 
+  S.offset = 1; // Default viewport to tomorrow on fresh application launch
+  save();
+  renderAll(); 
+
+  // Touch handlers for non-disruptive horizontal swiping on the daily logs view
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const swipeArea = document.getElementById('view-today');
+  
+  if (swipeArea) {
+    swipeArea.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    swipeArea.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      const threshold = 50; // Required sliding movement profile minimums
+
+      // Checks if the user is cleanly swiping sideways, rather than running a vertical card scroll
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+        if (deltaX > 0) {
+          changeDay(-1); // Swipe right -> Previous Day
+        } else {
+          changeDay(1);  // Swipe left -> Next Day
+        }
+      }
+    }, { passive: true });
+  }
+});
 </script>
 </body>
 </html>
