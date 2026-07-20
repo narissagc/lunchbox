@@ -674,7 +674,8 @@ function renderSheetFavs() {
   const key = dateKey(S.offset);
   const existing = getMeals(key)[sheetMealType] || [];
   
-  const groups = { 'Fruits & Veggies': [], 'Mains': [], 'Snacks': [], 'Other': [] };
+  const groups = {};
+  MASTER_CATEGORIES.forEach(c => groups[c] = []);
   S.favorites.forEach((f, idx) => {
     const cat = getFavCategory(f);
     if (groups[cat]) groups[cat].push({f, idx}); else groups['Other'].push({f, idx});
