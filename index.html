@@ -555,6 +555,20 @@ function initStorage() {
   if (!S.favCustomCategories || Object.keys(S.favCustomCategories).length === 0) { 
     S.favCustomCategories = JSON.parse(JSON.stringify(INITIAL_CATEGORIES)); save(); 
   }
+  // Migrate old 'Fruits & Veggies' entries to 'Fruits' or 'Veggies'
+  const VEGGIE_WORDS = ['carrot','celery','cucumber','pepper','broccoli','pea','bean','spinach','kale','lettuce','tomato','corn','zucchini','squash','veggie','vegetable'];
+  let migrated = false;
+  if (S.favCustomCategories) {
+    Object.keys(S.favCustomCategories).forEach(item => {
+      if (S.favCustomCategories[item] === 'Fruits & Veggies') {
+        const lower = item.toLowerCase();
+        const isVeggie = VEGGIE_WORDS.some(v => lower.includes(v));
+        S.favCustomCategories[item] = isVeggie ? 'Veggies' : 'Fruits';
+        migrated = true;
+      }
+    });
+  }
+  if (migrated) save();
 }
 
 function save() { try { localStorage.setItem('lunchbox_v8', JSON.stringify(S)); } catch(e) {} }
@@ -1112,7 +1126,7 @@ function renderSettings() {
 
       const catKey = cat.replace(/[^a-z]/gi, '_');
 
-      html += `<details class="favs-cat-block" open>
+      html += `<details class="favs-cat-block">
         <summary class="favs-cat-summary">
           <span style="display:flex;align-items:center;gap:7px;">
             <input type="checkbox" class="fav-cat-header-check" id="cat-check-${catKey}"
